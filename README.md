@@ -1,10 +1,21 @@
-# Women in Red — Wikidata Redlist Explorer
+# ♀ Women in Red — Wikidata Redlist Explorer
 
 A standalone browser tool that queries Wikidata in real time to find notable women missing from English Wikipedia. Built for [WikiProject Women in Red](https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Women_in_Red).
 
-**Live demo:** [nethahussain.github.io/wir-redlist-explorer](https://nethahussain.github.io/wir-redlist-explorer/)
+<p align="center">
+  <a href="https://nethahussain.github.io/wir-redlist-explorer/">
+    <img src="https://img.shields.io/badge/▶_LAUNCH_TOOL-nethahussain.github.io/wir--redlist--explorer-BA0000?style=for-the-badge&labelColor=8B0000" alt="Launch Tool">
+  </a>
+</p>
 
-![Screenshot](screenshot.png)
+<p align="center">
+  <strong>👉 <a href="https://nethahussain.github.io/wir-redlist-explorer/">nethahussain.github.io/wir-redlist-explorer</a> 👈</strong>
+</p>
+
+---
+
+![Screenshot of the Wikidata Redlist Explorer showing results for Physicians in India](screenshot.png)
+*Screenshot showing sample results for Physicians — India. Names displayed as red links (no English Wikipedia article exists). The tool queries Wikidata live, so actual results will vary.*
 
 ## What it does
 
@@ -34,7 +45,7 @@ The tool constructs SPARQL queries against the [Wikidata Query Service](https://
 
 1. Find items that are **human** (`P31 = Q5`) and **female** (`P21 = Q6581072`)
 2. Match the selected **occupation** (`P106`) and/or **country** (via `P27`, `P17`, `P495`, `P1532`, or `P19→P17`)
-3. **Exclude** items that already have an English Wikipedia article
+3. **Exclude** items that already have an English Wikipedia article using the standard `FILTER NOT EXISTS` clause on the `schema:isPartOf <https://en.wikipedia.org/>` graph — the same filter used by all Women in Red Wikidata redlists
 4. Return results ordered by **sitelink count** (descending) as a rough notability proxy
 
 The country matching uses the same multi-property approach documented in the [Wikidata redlist guide](https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Women_in_Red/Wikidata_redlist_guide) to catch women who may not have `country of citizenship` set but do have `place of birth` in that country.
