@@ -71,8 +71,8 @@ The country matching uses the same multi-property approach documented in the [Wi
 
 ## License
 
-[MIT](LICENSE)
+CC0
 
 ## Author
 
-[Anver Hisham](https://github.com/nethahussain)
+[Netha Hussain](https://github.com/nethahussain)
