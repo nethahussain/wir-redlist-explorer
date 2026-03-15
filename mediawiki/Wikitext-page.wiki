@@ -1,13 +1,3 @@
-<!-- 
-  WIR Redlist Explorer — Wikitext to add to the Women in Red project page.
-  
-  This can be placed on any WiR page, e.g.:
-    Wikipedia:WikiProject Women in Red/Redlist Explorer
-  
-  Or transcluded into the main page via:
-    {{Wikipedia:WikiProject Women in Red/Redlist Explorer}}
--->
-
 == Wikidata Redlist Explorer ==
 
 This tool queries [[Wikidata]] in real time to find notable women who have a Wikidata item but no English Wikipedia article. You can filter by '''occupation''', '''country''', or '''both simultaneously'''. Results match the format used in the [[Wikipedia:WikiProject Women in Red/Redlist index|Redlist index]].
@@ -26,5 +16,7 @@ importScript('User:Netha_Hussain/WIR-RedlistExplorer.js');
 <div id="wir-redlist-explorer"></div>
 
 {{clear}}
+
+<small>Created by [[User:Netha Hussain|Netha Hussain]] using Claude AI (Opus 4.6). Contact: nethahussain&#64;gmail.com. Source code: [https://github.com/nethahussain/wir-redlist-explorer GitHub].</small>
 
 [[Category:WikiProject Women in Red|Redlist Explorer]]
