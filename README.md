@@ -24,7 +24,7 @@ The [Women in Red Redlist Index](https://en.wikipedia.org/wiki/Wikipedia:WikiPro
 This tool provides a standalone, searchable interface to the same data:
 
 - **Filter by occupation** — ~90 occupations across 10 categories (Science, Arts, Politics, Sports, etc.)
-- **Filter by country** — ~130 countries across 6 regions
+- **Filter by country** — ~130 countries, flat alphabetical list
 - **Filter by both simultaneously** — e.g. "Physicians in India" or "Painters from Nigeria"
 - **Live SPARQL queries** — Results are always current, sourced directly from the Wikidata Query Service
 - **Wikipedia-style table** — Columns match the standard Redlist format:

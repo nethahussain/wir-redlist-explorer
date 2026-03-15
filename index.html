@@ -289,7 +289,7 @@ const COUNTRIES = {
     "Sweden":"Q34","Switzerland":"Q39","Ukraine":"Q212",
     "United Kingdom":"Q145"
   },
-  "Middle East": {
+  "West Asia": {
     "Bahrain":"Q398","Jordan":"Q810","Kuwait":"Q817","Lebanon":"Q822",
     "Oman":"Q842","Palestine":"Q219060","Qatar":"Q846",
     "Saudi Arabia":"Q851","Syria":"Q858","United Arab Emirates":"Q878",
@@ -334,13 +334,14 @@ const ALL_CTY = flattenCty();
 function buildDropdownItems(type) {
   const container = document.getElementById(type + '-items');
   const items = type === 'occ' ? ALL_OCC : ALL_CTY;
+  const showGroups = type === 'occ';
   const groupKey = type === 'occ' ? 'group' : 'region';
   const search = document.getElementById(type + '-search').value.toLowerCase();
   const selected = type === 'occ' ? selectedOcc : selectedCty;
 
   const filtered = items.filter(o =>
     o.name.toLowerCase().includes(search) ||
-    o[groupKey].toLowerCase().includes(search)
+    (showGroups && o[groupKey].toLowerCase().includes(search))
   );
 
   let html = '';
@@ -349,12 +350,13 @@ function buildDropdownItems(type) {
   }
   let lastGroup = '';
   for (const o of filtered) {
-    if (o[groupKey] !== lastGroup) {
+    if (showGroups && o[groupKey] !== lastGroup) {
       lastGroup = o[groupKey];
       html += `<div class="dd-group">${esc(lastGroup)}</div>`;
     }
     const isSel = selected && selected.name === o.name;
-    html += `<button class="dd-item${isSel ? ' sel' : ''}" onclick="selectItem('${type}','${esc(o.name)}')">${esc(o.name)}</button>`;
+    const pad = showGroups ? '' : ' style="padding-left:12px"';
+    html += `<button class="dd-item${isSel ? ' sel' : ''}"${pad} onclick="selectItem('${type}','${esc(o.name)}')">${esc(o.name)}</button>`;
   }
   container.innerHTML = html;
 }
