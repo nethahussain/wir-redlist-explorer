@@ -309,6 +309,7 @@ let sortCol = "sites";
 let sortDir = "desc";
 let tableFilterText = "";
 let isLoading = false;
+let lastQuery = "";
 
 // ── FLATTEN ──────────────────────────────────────────────────────────────────
 function flattenOcc() {
@@ -509,6 +510,7 @@ async function doSearch() {
       selectedCty ? selectedCty.qId : null,
       limit
     );
+    lastQuery = query;
     const url = 'https://query.wikidata.org/sparql?query=' + encodeURIComponent(query) + '&format=json';
     const resp = await fetch(url, { headers: { 'Accept': 'application/sparql-results+json' } });
     if (!resp.ok) throw new Error('SPARQL ' + resp.status + ': ' + resp.statusText);
@@ -618,7 +620,7 @@ function renderResults() {
       <div class="res-toolbar">
         <span class="res-count">∑ <strong>${filtered.length}</strong> items</span>
         <input class="res-filter" type="text" placeholder="Filter table…" value="${esc(tableFilterText)}" oninput="onTableFilter(this.value)">
-        <a class="sparql-btn" href="https://query.wikidata.org/" target="_blank" title="Open Wikidata Query Service">SPARQL ↗</a>
+        <a class="sparql-btn" href="https://query.wikidata.org/#${encodeURIComponent(lastQuery)}" target="_blank" title="Open this query in Wikidata Query Service">SPARQL ↗</a>
       </div>
       <div class="tbl-wrap">
         <table>
