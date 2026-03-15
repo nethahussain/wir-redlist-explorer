@@ -6,16 +6,16 @@
  * Filter by occupation, country, or both simultaneously.
  *
  * Installation: Add to your [[Special:MyPage/common.js]]:
- *   importScript('User:Nethahussain/WIR-RedlistExplorer.js');
+ *   importScript('User:Netha_Hussain/WIR-RedlistExplorer.js');
  *
  * Or load the stylesheet too for enhanced styling:
- *   importStylesheet('User:Nethahussain/WIR-RedlistExplorer.css');
- *   importScript('User:Nethahussain/WIR-RedlistExplorer.js');
+ *   importStylesheet('User:Netha_Hussain/WIR-RedlistExplorer.css');
+ *   importScript('User:Netha_Hussain/WIR-RedlistExplorer.js');
  *
  * This script only activates on pages containing the element:
  *   <div id="wir-redlist-explorer"></div>
  *
- * @author [[User:Nethahussain]]
+ * @author [[User:Netha_Hussain]]
  * @license MIT
  * @see [[Wikipedia:WikiProject Women in Red/Redlist index]]
  */

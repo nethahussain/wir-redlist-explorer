@@ -7,8 +7,8 @@ on [[Wikipedia:WikiProject Women in Red]] pages.
 
 | File | Wikipedia page | Purpose |
 |------|---------------|---------|
-| `WIR-RedlistExplorer.js` | `User:Nethahussain/WIR-RedlistExplorer.js` | The main JavaScript user script |
-| `WIR-RedlistExplorer.css` | `User:Nethahussain/WIR-RedlistExplorer.css` | Optional stylesheet for enhanced styling |
+| `WIR-RedlistExplorer.js` | `User:Netha_Hussain/WIR-RedlistExplorer.js` | The main JavaScript user script |
+| `WIR-RedlistExplorer.css` | `User:Netha_Hussain/WIR-RedlistExplorer.css` | Optional stylesheet for enhanced styling |
 | `Wikitext-page.wiki` | `Wikipedia:WikiProject Women in Red/Redlist Explorer` | Wikitext for the WiR subpage |
 
 ## How to install (for individual users)
@@ -16,8 +16,8 @@ on [[Wikipedia:WikiProject Women in Red]] pages.
 Add these lines to your [[Special:MyPage/common.js]]:
 
 ```js
-importStylesheet('User:Nethahussain/WIR-RedlistExplorer.css');
-importScript('User:Nethahussain/WIR-RedlistExplorer.js');
+importStylesheet('User:Netha_Hussain/WIR-RedlistExplorer.css');
+importScript('User:Netha_Hussain/WIR-RedlistExplorer.js');
 ```
 
 Then visit any page containing `<div id="wir-redlist-explorer"></div>` and the
@@ -25,8 +25,8 @@ tool will appear.
 
 ## How to deploy (on a WiR project page)
 
-1. Create `User:Nethahussain/WIR-RedlistExplorer.js` — paste the JS file contents
-2. Create `User:Nethahussain/WIR-RedlistExplorer.css` — paste the CSS file contents
+1. Create `User:Netha_Hussain/WIR-RedlistExplorer.js` — paste the JS file contents
+2. Create `User:Netha_Hussain/WIR-RedlistExplorer.css` — paste the CSS file contents
 3. Create `Wikipedia:WikiProject Women in Red/Redlist Explorer` — paste the wikitext
 4. Optionally transclude it from the main WiR page:
    `{{Wikipedia:WikiProject Women in Red/Redlist Explorer}}`
