@@ -1,0 +1,43 @@
+== Gadget proposal: WIR Redlist Explorer ==
+
+'''Proposer:''' [[User:Netha Hussain|Netha Hussain]]
+
+'''Date:''' ~~~~~
+
+=== Description ===
+
+A tool for [[Wikipedia:WikiProject Women in Red]] that queries [[Wikidata]] in real time to find notable women who have a Wikidata item but no English Wikipedia article. Users can filter by occupation (~200 options), country (~130 options), or both simultaneously. Results display in a standard wikitable with red-linked names (for article creation), description, occupation, country, dates, Wikidata item link, image thumbnails, and sitelink count.
+
+The tool is already deployed as a user script at [[User:Netha Hussain/WIR-RedlistExplorer.js]] and has a standalone version at [https://nethahussain.github.io/wir-redlist-explorer/ nethahussain.github.io/wir-redlist-explorer].
+
+=== Proposed gadget definition ===
+
+<syntaxhighlight lang="text">
+* WIR-RedlistExplorer[ResourceLoader|type=general|default|dependencies=oojs-ui-core,oojs-ui-widgets,jquery.tablesorter|peers=WIR-RedlistExplorer-styles|rights=createpage]|WIR-RedlistExplorer.js
+* WIR-RedlistExplorer-styles[ResourceLoader|type=styles|hidden]|WIR-RedlistExplorer.css
+</syntaxhighlight>
+
+=== How it works ===
+
+* The script activates ''only'' on pages containing <code>&lt;div id="wir-redlist-explorer"&gt;&lt;/div&gt;</code>. It has zero impact on all other pages.
+* Uses MediaWiki's native [[OOUI]] widgets for the filter dropdowns.
+* Results render as a standard <code>wikitable sortable</code> table with <code>jquery.tablesorter</code>.
+* SPARQL queries go to <code>query.wikidata.org</code> (a Wikimedia domain, within CSP).
+* Image thumbnails are served from Commons (also within CSP).
+* The <code>FILTER NOT EXISTS</code> clause ensures only women ''without'' an English Wikipedia article appear.
+* The script only fires when the target div exists — no overhead on any other page.
+
+=== Pages that would use it ===
+
+* [[User:Netha Hussain/Redlist Explorer]] (current location)
+* Could be placed on [[Wikipedia:WikiProject Women in Red/Redlist index]] or a subpage
+
+=== Source code ===
+
+* JavaScript: [[User:Netha Hussain/WIR-RedlistExplorer.js]] ([https://github.com/nethahussain/wir-redlist-explorer/blob/main/mediawiki/WIR-RedlistExplorer.js GitHub])
+* CSS: [[User:Netha Hussain/WIR-RedlistExplorer.css]] ([https://github.com/nethahussain/wir-redlist-explorer/blob/main/mediawiki/WIR-RedlistExplorer.css GitHub])
+* License: CC0
+
+=== Support ===
+<!-- Add your support/oppose below -->
+# {{support}} As proposer. ~~~~

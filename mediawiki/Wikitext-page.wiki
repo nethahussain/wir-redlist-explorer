@@ -1,19 +1,21 @@
 == Wikidata Redlist Explorer ==
 
-This tool queries [[Wikidata]] in real time to find notable women who have a Wikidata item but no English Wikipedia article. You can filter by '''occupation''', '''country''', or '''both simultaneously'''. Results match the format used in the [[Wikipedia:WikiProject Women in Red/Redlist index|Redlist index]].
+This tool queries [[Wikidata]] in real time to find notable women who have a Wikidata item but no English Wikipedia article. You can filter by '''occupation''' (~200 options), '''country''' (~130 options), or '''both simultaneously'''. Results match the format used in the [[Wikipedia:WikiProject Women in Red/Redlist index|Redlist index]].
 
-A standalone version of this tool is also available at [https://nethahussain.github.io/wir-redlist-explorer/ nethahussain.github.io/wir-redlist-explorer] (no installation needed).
+<div id="wir-redlist-explorer">
+{| style="border: 2px solid #ba0000; border-radius: 8px; padding: 20px; margin: 16px 0; background: #fff5f5; width: 100%;"
+|-
+| style="text-align: center; font-size: 120%;" |
+'''[https://nethahussain.github.io/wir-redlist-explorer/ ▶ Launch the Wikidata Redlist Explorer]'''
 
-{{collapse top|title=How to enable the on-wiki version|bg=#f8f9fa}}
-To use the tool directly on this page, add the following two lines to your [[Special:MyPage/common.js]] and then reload this page:
-
-<syntaxhighlight lang="javascript">
-importStylesheet('User:Netha_Hussain/WIR-RedlistExplorer.css');
-importScript('User:Netha_Hussain/WIR-RedlistExplorer.js');
-</syntaxhighlight>
-{{collapse bottom}}
-
-<div id="wir-redlist-explorer"></div>
+<span style="font-size: 90%; color: #555;">Opens in a new tab — no installation needed. Filter by occupation, country, or both.</span>
+|-
+| style="text-align: center; padding-top: 10px; font-size: 85%; color: #777;" |
+''Want the tool embedded directly on this page? Add the following to your [[Special:MyPage/common.js]]:''<br>
+<code>importStylesheet('User:Netha_Hussain/WIR-RedlistExplorer.css');</code><br>
+<code>importScript('User:Netha_Hussain/WIR-RedlistExplorer.js');</code>
+|}
+</div>
 
 {{clear}}
 
