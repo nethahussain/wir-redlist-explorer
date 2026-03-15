@@ -1,0 +1,115 @@
+/**
+ * WIR Redlist Explorer — Stylesheet
+ * 
+ * To install, add to your [[Special:MyPage/common.css]] or load via:
+ *   importStylesheet('User:Nethahussain/WIR-RedlistExplorer.css');
+ *
+ * @author [[User:Nethahussain]]
+ */
+
+/* ── Filter bar ──────────────────────────────────────────────────────────────── */
+.wir-filter-bar {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	align-items: flex-end;
+	padding: 12px 16px;
+	background: #f8f9fa;
+	border: 1px solid #a2a9b1;
+	border-radius: 2px;
+	margin-bottom: 16px;
+}
+
+.wir-dropdown {
+	min-width: 220px;
+	max-width: 340px;
+}
+
+.wir-limit-dropdown {
+	min-width: 80px;
+	max-width: 100px;
+}
+
+.wir-buttons {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	padding-bottom: 2px;
+}
+
+/* ── Results ─────────────────────────────────────────────────────────────────── */
+.wir-intro {
+	font-size: 90%;
+	color: #54595d;
+	margin-bottom: 8px;
+}
+
+.wir-summary {
+	font-size: 90%;
+	color: #54595d;
+	margin-bottom: 12px;
+}
+
+.wir-table {
+	font-size: 90%;
+}
+
+.wir-table .wir-name {
+	white-space: nowrap;
+}
+
+/* Red links — match Wikipedia's native red link style */
+.wir-table .wir-name a.new {
+	color: #ba0000;
+}
+
+/* Column sizing */
+.wir-table .wir-col-desc {
+	max-width: 240px;
+	font-size: 85%;
+	color: #54595d;
+}
+
+.wir-table .wir-col-occ {
+	max-width: 200px;
+	font-size: 85%;
+}
+
+/* ── Loading & error ─────────────────────────────────────────────────────────── */
+.wir-loading {
+	padding: 24px 0;
+	color: #54595d;
+	font-size: 90%;
+}
+
+.wir-error {
+	padding: 12px 16px;
+	background: #fee7e6;
+	border: 1px solid #d33;
+	border-left: 4px solid #d33;
+	border-radius: 2px;
+	margin: 12px 0;
+}
+
+.wir-error strong {
+	color: #a2000d;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────────── */
+@media ( max-width: 768px ) {
+	.wir-filter-bar {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.wir-dropdown,
+	.wir-limit-dropdown {
+		max-width: 100%;
+		min-width: 100%;
+	}
+
+	.wir-table .wir-col-desc,
+	.wir-table .wir-col-occ {
+		display: none;
+	}
+}

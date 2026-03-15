@@ -80,6 +80,10 @@ The country matching uses the same multi-property approach documented in the [Wi
 - [How to Add Names to Women in Red Lists](https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Women_in_Red/How_to_add_names_to_Women_in_Red_lists)
 - [Humaniki — Wikipedia Gender Statistics](https://humaniki.wmcloud.org/)
 
+## MediaWiki version (for English Wikipedia)
+
+A version that runs natively on English Wikipedia as a user script is available in the [`mediawiki/`](mediawiki/) directory. It uses MediaWiki's built-in OOUI widgets and `wikitable sortable` classes. See [`mediawiki/README.md`](mediawiki/README.md) for installation instructions.
+
 ## License
 
 CC0
