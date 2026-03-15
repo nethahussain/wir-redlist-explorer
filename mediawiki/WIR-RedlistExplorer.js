@@ -39,63 +39,107 @@ container.innerHTML = '<p style="color:#54595d">⏳ Loading Wikidata Redlist Exp
 // ── OCCUPATION DATA ──────────────────────────────────────────────────────────
 var OCCUPATIONS = {
 	'Activism & Politics': {
-		'Activists': ['Q15253558'], 'Diplomats': ['Q193391'], 'Feminists': ['Q21507383'],
-		'Human rights activists': ['Q1476215'], 'Monarchs': ['Q116'], 'Politicians': ['Q82955'],
-		'Revolutionaries': ['Q3242115'], 'Suffragists': ['Q29424'], 'Trade unionists': ['Q15627169']
+		'Activists': ['Q15253558'], 'Civil rights activists': ['Q3745750'], 'Diplomats': ['Q193391'],
+		'Feminists': ['Q21507383'], 'Human rights activists': ['Q1476215'], 'Labor activists': ['Q15627169'],
+		'Monarchs': ['Q116'], 'Nobles': ['Q2478141'], 'Politicians': ['Q82955'],
+		'Resistance fighters': ['Q1397808'], 'Revolutionaries': ['Q3242115'],
+		'Social workers': ['Q1587565'], 'Suffragists': ['Q29424'], 'Trade unionists': ['Q15627169']
 	},
-	'Arts & Culture': {
-		'Architects': ['Q42973'], 'Choreographers': ['Q2490358'], 'Composers': ['Q36834'],
-		'Conductors (music)': ['Q158852'], 'Curators': ['Q674426'], 'Dancers': ['Q5716684'],
-		'Fashion designers': ['Q3501317'], 'Film directors': ['Q2526255'], 'Film producers': ['Q3282637'],
-		'Illustrators': ['Q644687'], 'Musicians': ['Q639669'], 'Opera singers': ['Q2865819'],
-		'Painters': ['Q1028181'], 'Photographers': ['Q33231'], 'Pianists': ['Q486748'],
-		'Sculptors': ['Q1281618'], 'Singers': ['Q177220'], 'Textile artists': ['Q5322166'],
-		'Violinists': ['Q1259917']
+	'Arts & Visual Arts': {
+		'Animators': ['Q266569'], 'Architects': ['Q42973'], 'Calligraphers': ['Q3303330'],
+		'Cartoonists': ['Q1114448'], 'Ceramicists': ['Q7541856'], 'Comics artists': ['Q15296938'],
+		'Costume designers': ['Q1323191'], 'Engravers': ['Q329439'], 'Graphic designers': ['Q627325'],
+		'Illustrators': ['Q644687'], 'Interior designers': ['Q2895295'], 'Jewellery designers': ['Q2519376'],
+		'Miniaturists': ['Q10862983'], 'Muralists': ['Q1281618'], 'Painters': ['Q1028181'],
+		'Photographers': ['Q33231'], 'Printmakers': ['Q11569986'], 'Sculptors': ['Q1281618'],
+		'Textile artists': ['Q5322166'], 'Visual artists': ['Q3391743'], 'Weavers': ['Q18939491']
 	},
 	'Business & Economics': {
-		'Businesspeople': ['Q43845', 'Q131524'], 'Economists': ['Q188094'], 'Industrialists': ['Q6606110']
+		'Bankers': ['Q806798'], 'Businesspeople': ['Q43845', 'Q131524'], 'Economists': ['Q188094'],
+		'Industrialists': ['Q6606110'], 'Managers': ['Q2462658']
 	},
 	'Education & Academia': {
 		'Academics': ['Q3400985'], 'Educational specialists': ['Q5341303', 'Q1569495', 'Q901222'],
 		'Educators': ['Q1056391', 'Q37226', 'Q974144'], 'Librarians': ['Q182436'],
+		'Linguists': ['Q14467526'], 'Philologists': ['Q13418253'], 'Professors': ['Q121594'],
 		'Researchers': ['Q1650915'], 'University teachers': ['Q1622272']
 	},
-	'Law & Justice': { 'Judges': ['Q16533'], 'Lawyers': ['Q40348'] },
+	'Law & Justice': {
+		'Judges': ['Q16533'], 'Lawyers': ['Q40348'], 'Magistrates': ['Q4594605'],
+		'Notaries': ['Q189010'], 'Prosecutors': ['Q600751']
+	},
 	'Literature & Writing': {
 		'Art critics': ['Q6430706'], 'Art historians': ['Q1792450'], 'Authors': ['Q482980'],
-		"Children's writers": ['Q4853732'], 'Columnists': ['Q1086863'], 'Critics': ['Q4263842'],
-		'Editors': ['Q1607826'], 'Essayists': ['Q11774202'], 'Historians': ['Q201788'],
-		'Journalists': ['Q1930187'], 'Novelists': ['Q6625963'], 'Playwrights': ['Q214917'],
-		'Poets': ['Q49757'], 'Publishers': ['Q2516866'], 'Screenwriters': ['Q28389'],
-		'Songwriters': ['Q753110'], 'Translators': ['Q333634'], 'Writers': ['Q36180']
+		'Biographers': ['Q18814623'], 'Bloggers': ['Q877517'], "Children's writers": ['Q4853732'],
+		'Columnists': ['Q1086863'], 'Critics': ['Q4263842'],
+		'Editors': ['Q1607826'], 'Essayists': ['Q11774202'], 'Folklorists': ['Q15214752'],
+		'Historians': ['Q201788'], 'Journalists': ['Q1930187'], 'Literary critics': ['Q4263842'],
+		'Novelists': ['Q6625963'], 'Playwrights': ['Q214917'], 'Poets': ['Q49757'],
+		'Publishers': ['Q2516866'], 'Screenwriters': ['Q28389'], 'Songwriters': ['Q753110'],
+		'Translators': ['Q333634'], 'Writers': ['Q36180']
 	},
 	'Media & Entertainment': {
 		'Actresses': ['Q33999'], 'Comedians': ['Q245068'], 'Film critics': ['Q1350157'],
-		'Models': ['Q4610556'], 'Presenters': ['Q13590141'], 'Television presenters': ['Q947873'],
-		'Voice actresses': ['Q2405480']
+		'Film directors': ['Q2526255'], 'Film producers': ['Q3282637'], 'Models': ['Q4610556'],
+		'Presenters': ['Q13590141'], 'Radio presenters': ['Q2722764'],
+		'Television presenters': ['Q947873'], 'Voice actresses': ['Q2405480']
+	},
+	'Performing Arts': {
+		'Choreographers': ['Q2490358'], 'Circus performers': ['Q6660286'], 'Composers': ['Q36834'],
+		'Conductors (music)': ['Q158852'], 'Curators': ['Q674426'], 'Dancers': ['Q5716684'],
+		'Flautists': ['Q12902372'], 'Guitarists': ['Q855091'], 'Harpists': ['Q855091'],
+		'Musicians': ['Q639669'], 'Opera singers': ['Q2865819'], 'Organists': ['Q765778'],
+		'Pianists': ['Q486748'], 'Singers': ['Q177220'], 'Theatre directors': ['Q3387717'],
+		'Violinists': ['Q1259917'], 'Violoncellists': ['Q1323883']
 	},
 	'Religion & Spirituality': {
-		'Nuns': ['Q191808'], 'Religious leaders': ['Q2259451'], 'Theologians': ['Q1234713']
+		'Abbesses': ['Q75178'], 'Missionaries': ['Q219477'], 'Nuns': ['Q191808'],
+		'Religious leaders': ['Q2259451'], 'Saints': ['Q43115'], 'Theologians': ['Q1234713']
 	},
-	'Science & Medicine': {
+	'Science & Technology': {
 		'Anthropologists': ['Q4773904'], 'Archaeologists': ['Q3621491'], 'Astronomers': ['Q11063'],
-		'Biochemists': ['Q15142903'], 'Biologists': ['Q864503'], 'Botanists': ['Q2374149'],
-		'Chemists': ['Q593644'], 'Entomologists': ['Q3055126'], 'Geologists': ['Q520549'],
-		'Mathematicians': ['Q170790'], 'Midwives': ['Q185196'], 'Nurses': ['Q186360'],
-		'Pharmacists': ['Q105186'], 'Physicians': ['Q39631'], 'Physicists': ['Q169470'],
-		'Psychologists': ['Q212980'], 'Sociologists': ['Q2306091'], 'Surgeons': ['Q774306'],
-		'Veterinarians': ['Q202883'], 'Zoologists': ['Q350979']
+		'Astrophysicists': ['Q752129'], 'Biochemists': ['Q15142903'], 'Biologists': ['Q864503'],
+		'Botanists': ['Q2374149'], 'Chemists': ['Q593644'], 'Computer scientists': ['Q82594'],
+		'Ecologists': ['Q350979'], 'Entomologists': ['Q3055126'], 'Epidemiologists': ['Q15634566'],
+		'Geneticists': ['Q3126128'], 'Geographers': ['Q901402'], 'Geologists': ['Q520549'],
+		'Marine biologists': ['Q2867476'], 'Mathematicians': ['Q170790'],
+		'Meteorologists': ['Q12050421'], 'Microbiologists': ['Q15917187'],
+		'Neuroscientists': ['Q15634566'], 'Paleontologists': ['Q1662561'],
+		'Physicists': ['Q169470'], 'Statisticians': ['Q2732142'], 'Zoologists': ['Q350979']
+	},
+	'Medicine & Health': {
+		'Dentists': ['Q27349'], 'Dermatologists': ['Q1789414'], 'Gynecologists': ['Q15924224'],
+		'Midwives': ['Q185196'], 'Nurses': ['Q186360'], 'Oncologists': ['Q4165402'],
+		'Ophthalmologists': ['Q15924610'], 'Pathologists': ['Q4202929'], 'Pediatricians': ['Q1919436'],
+		'Pharmacists': ['Q105186'], 'Physicians': ['Q39631'], 'Psychiatrists': ['Q211346'],
+		'Psychologists': ['Q212980'], 'Radiologists': ['Q1569276'], 'Sociologists': ['Q2306091'],
+		'Surgeons': ['Q774306'], 'Veterinarians': ['Q202883']
 	},
 	'Sports': {
-		'Athletes': ['Q11513337'], 'Basketball players': ['Q3665646'], 'Chess players': ['Q10873124'],
-		'Cricketers': ['Q12299841'], 'Cyclists': ['Q2309784'], 'Fencers': ['Q13381689'],
-		'Figure skaters': ['Q13381572'], 'Rowers': ['Q13382519'], 'Speed skaters': ['Q15117395'],
-		'Swimmers': ['Q10843402'], 'Tennis players': ['Q10833314']
+		'Alpine skiers': ['Q4144610'], 'Archers': ['Q13382576'], 'Athletes': ['Q11513337'],
+		'Badminton players': ['Q13141064'], 'Basketball players': ['Q3665646'],
+		'Boxers': ['Q11338576'], 'Canoeists': ['Q13382608'], 'Chess players': ['Q10873124'],
+		'Cricketers': ['Q12299841'], 'Cross-country skiers': ['Q13382519'],
+		'Cyclists': ['Q2309784'], 'Divers': ['Q13381427'], 'Equestrians': ['Q13382603'],
+		'Fencers': ['Q13381689'], 'Figure skaters': ['Q13381572'],
+		'Football players': ['Q937857'], 'Golfers': ['Q13156709'],
+		'Gymnasts': ['Q15117302'], 'Handball players': ['Q13365117'],
+		'Hockey players': ['Q11774891'], 'Judokas': ['Q6665249'],
+		'Martial artists': ['Q14373094'], 'Rowers': ['Q13382519'],
+		'Rugby players': ['Q14089670'], 'Sailors': ['Q13382519'],
+		'Shooters': ['Q13382608'], 'Speed skaters': ['Q15117395'],
+		'Swimmers': ['Q10843402'], 'Table tennis players': ['Q13219587'],
+		'Tennis players': ['Q10833314'], 'Track & field athletes': ['Q11513337'],
+		'Volleyball players': ['Q15117415'], 'Water polo players': ['Q13382608'],
+		'Weightlifters': ['Q13381376'], 'Wrestlers': ['Q13474373']
 	},
 	'Other': {
-		'Aviators': ['Q2095549'], 'Collectors': ['Q3243461'], 'Cooks & chefs': ['Q3499072'],
-		'Engineers': ['Q81096'], 'Environmentalists': ['Q15839134'], 'Explorers': ['Q11900058'],
-		'Inventors': ['Q205375'], 'Philanthropists': ['Q12362622'], 'Spies': ['Q9352089']
+		'Astronauts': ['Q11631'], 'Aviators': ['Q2095549'], 'Collectors': ['Q3243461'],
+		'Cooks & chefs': ['Q3499072'], 'Engineers': ['Q81096'], 'Environmentalists': ['Q15839134'],
+		'Explorers': ['Q11900058'], 'Fashion designers': ['Q3501317'], 'Firefighters': ['Q107711'],
+		'Inventors': ['Q205375'], 'Military personnel': ['Q47064'], 'Philanthropists': ['Q12362622'],
+		'Pilots': ['Q158063'], 'Police officers': ['Q361593'], 'Spies': ['Q9352089'],
+		'Technologists': ['Q5482740']
 	}
 };
 
