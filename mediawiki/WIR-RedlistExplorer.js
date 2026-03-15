@@ -16,7 +16,7 @@
  *   <div id="wir-redlist-explorer"></div>
  *
  * @author [[User:Netha_Hussain]]
- * @license MIT
+ * @license CC0-1.0
  * @see [[Wikipedia:WikiProject Women in Red/Redlist index]]
  */
 ( function () {
