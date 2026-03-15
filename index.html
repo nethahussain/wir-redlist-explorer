@@ -493,6 +493,44 @@ function openSparql() {
   }
 }
 
+async function fetchWithRetry(url, maxRetries) {
+  let lastError;
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 60000); // 60s timeout
+      const resp = await fetch(url, {
+        headers: { 'Accept': 'application/sparql-results+json' },
+        signal: controller.signal
+      });
+      clearTimeout(timeout);
+      if (resp.status === 429 || resp.status === 503) {
+        // Rate limited or overloaded — wait and retry
+        const wait = (attempt + 1) * 3000;
+        document.querySelector('.ld p').textContent =
+          'Server busy, retrying in ' + ((wait/1000)|0) + 's… (attempt ' + (attempt+2) + '/' + maxRetries + ')';
+        await new Promise(r => setTimeout(r, wait));
+        continue;
+      }
+      if (!resp.ok) throw new Error('SPARQL ' + resp.status + ': ' + resp.statusText);
+      return await resp.json();
+    } catch(e) {
+      lastError = e;
+      if (e.name === 'AbortError') {
+        lastError = new Error('Query timed out after 60 seconds');
+      }
+      if (attempt < maxRetries - 1) {
+        const wait = (attempt + 1) * 2000;
+        const ldP = document.querySelector('.ld p');
+        if (ldP) ldP.textContent =
+          'Connection issue, retrying in ' + ((wait/1000)|0) + 's… (attempt ' + (attempt+2) + '/' + maxRetries + ')';
+        await new Promise(r => setTimeout(r, wait));
+      }
+    }
+  }
+  throw lastError;
+}
+
 // ── SEARCH ───────────────────────────────────────────────────────────────────
 async function doSearch() {
   if (!selectedOcc && !selectedCty) return;
@@ -518,9 +556,9 @@ async function doSearch() {
     );
     lastQuery = query;
     const url = 'https://query.wikidata.org/sparql?query=' + encodeURIComponent(query) + '&format=json';
-    const resp = await fetch(url, { headers: { 'Accept': 'application/sparql-results+json' } });
-    if (!resp.ok) throw new Error('SPARQL ' + resp.status + ': ' + resp.statusText);
-    const data = await resp.json();
+
+    // Fetch with timeout + retry
+    const data = await fetchWithRetry(url, 3);
 
     const seen = new Set();
     currentResults = data.results.bindings
@@ -545,11 +583,18 @@ async function doSearch() {
     tableFilterText = '';
     renderResults();
   } catch(e) {
+    const msg = e.message || 'Unknown error';
+    const isTimeout = msg.includes('timed out');
+    const isFetch = msg.includes('Failed to fetch') || msg.includes('NetworkError') || msg.includes('network');
+    let advice = 'The Wikidata SPARQL endpoint may be temporarily overloaded. Try reducing the limit or narrowing your selection.';
+    if (isTimeout) advice = 'The query took too long. Try selecting <b>both</b> an occupation and a country, or reduce the limit to 100 or 200.';
+    if (isFetch) advice = 'Could not reach the Wikidata server. Check your internet connection and try again in a few seconds. If the problem persists, the SPARQL endpoint may be temporarily down — you can check its <a href="https://query.wikidata.org/" target="_blank">status here</a>.';
     content.innerHTML = `
       <div class="err"><div class="err-box">
         <strong>Query error</strong>
-        <p>${esc(e.message)}</p>
-        <p style="margin-top:6px;font-size:12px">The Wikidata SPARQL endpoint may be temporarily overloaded. Try reducing the limit or narrowing your selection.</p>
+        <p>${esc(msg)}</p>
+        <p style="margin-top:6px;font-size:12px">${advice}</p>
+        <p style="margin-top:8px"><button onclick="doSearch()" style="padding:6px 16px;cursor:pointer;border:1px solid #a2a9b1;border-radius:3px;background:#f8f9fa;font-family:inherit;font-size:14px">↻ Retry</button></p>
       </div></div>`;
   } finally {
     isLoading = false;
