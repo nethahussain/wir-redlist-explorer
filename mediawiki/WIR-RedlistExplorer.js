@@ -238,6 +238,7 @@ function buildQuery( occQIds, ctyQId, limit ) {
 		'(SAMPLE(?_dob) AS ?dob) (SAMPLE(?_dod) AS ?dod) ' +
 		'(SAMPLE(?_countryLabel) AS ?countryLabel) ' +
 		'(GROUP_CONCAT(DISTINCT ?_occLabel; separator=", ") AS ?occupations) ' +
+		'(SAMPLE(?_image) AS ?image) ' +
 		'(COUNT(DISTINCT ?sitelink) AS ?sites) ' +
 		'WHERE { ' +
 		'?item wdt:P31 wd:Q5 ; wdt:P21 wd:Q6581072 . ' +
@@ -247,6 +248,7 @@ function buildQuery( occQIds, ctyQId, limit ) {
 		'OPTIONAL { ?item wdt:P570 ?_dod . } ' +
 		'OPTIONAL { ?item wdt:P27 ?_country . ?_country rdfs:label ?_countryLabel . FILTER(LANG(?_countryLabel)="en") } ' +
 		'OPTIONAL { ?item wdt:P106 ?_occItem . ?_occItem rdfs:label ?_occLabel . FILTER(LANG(?_occLabel)="en") } ' +
+		'OPTIONAL { ?item wdt:P18 ?_image . } ' +
 		'OPTIONAL { ?sitelink schema:about ?item . } ' +
 		'FILTER NOT EXISTS { ?article schema:about ?item ; schema:isPartOf <https://en.wikipedia.org/> . } ' +
 		'SERVICE wikibase:label { bd:serviceParam wikibase:language "en,mul" . } ' +
@@ -282,6 +284,11 @@ function escHtml( s ) {
 	var d = document.createElement( 'div' );
 	d.textContent = s;
 	return d.innerHTML;
+}
+
+function thumbUrl( commonsUrl, width ) {
+	if ( !commonsUrl ) return '';
+	return commonsUrl.replace( 'http://', 'https://' ) + '?width=' + ( width || 50 );
 }
 
 // ── State ────────────────────────────────────────────────────────────────────
@@ -479,6 +486,7 @@ mw.loader.using( [ 'oojs-ui-core', 'oojs-ui-widgets' ] ).then( function () {
 					dod: fmtDate( b.dod ? b.dod.value : '' ),
 					country: b.countryLabel ? b.countryLabel.value : '',
 					occupations: b.occupations ? b.occupations.value : '',
+					image: b.image ? b.image.value : '',
 					sites: parseInt( b.sites ? b.sites.value : '0' ) || 0
 				} );
 			}
@@ -520,6 +528,7 @@ mw.loader.using( [ 'oojs-ui-core', 'oojs-ui-widgets' ] ).then( function () {
 		html += '<thead><tr>' +
 			'<th class="headerSort" data-sort-type="number">#</th>' +
 			'<th>name</th>' +
+			'<th class="wir-col-img">image</th>' +
 			'<th class="wir-col-desc">description</th>' +
 			'<th class="wir-col-occ">occupation (P106)</th>' +
 			'<th>country of citizenship (P27)</th>' +
@@ -532,11 +541,14 @@ mw.loader.using( [ 'oojs-ui-core', 'oojs-ui-widgets' ] ).then( function () {
 		for ( var i = 0; i < results.length; i++ ) {
 			var r = results[i];
 			var wpTitle = r.name.replace( / /g, '_' );
+			var imgHtml = r.image ? '<img src="' + thumbUrl( r.image, 50 ) +
+				'" loading="lazy" alt="" width="50" style="border-radius:3px;max-height:50px;object-fit:cover">' : '';
 			html += '<tr>' +
 				'<td>' + ( i + 1 ) + '</td>' +
 				'<td class="wir-name"><a href="/w/index.php?title=' + encodeURIComponent( wpTitle ) +
 					'&action=edit&redlink=1" class="new" title="' + escHtml( r.name ) +
 					' (page does not exist)">' + escHtml( r.name ) + '</a></td>' +
+				'<td class="wir-col-img">' + imgHtml + '</td>' +
 				'<td class="wir-col-desc">' + escHtml( r.description ) + '</td>' +
 				'<td class="wir-col-occ">' + escHtml( r.occupations ) + '</td>' +
 				'<td>' + escHtml( r.country ) + '</td>' +

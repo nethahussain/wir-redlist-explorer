@@ -63,6 +63,13 @@
 	color: #ba0000;
 }
 
+/* Image column */
+.wir-table .wir-col-img {
+	width: 50px;
+	text-align: center;
+	padding: 2px;
+}
+
 /* Column sizing */
 .wir-table .wir-col-desc {
 	max-width: 240px;
@@ -109,7 +116,8 @@
 	}
 
 	.wir-table .wir-col-desc,
-	.wir-table .wir-col-occ {
+	.wir-table .wir-col-occ,
+	.wir-table .wir-col-img {
 		display: none;
 	}
 }
