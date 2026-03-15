@@ -504,7 +504,7 @@ async function fetchWithRetry(url, maxRetries) {
         signal: controller.signal
       });
       clearTimeout(timeout);
-      if (resp.status === 429 || resp.status === 503) {
+      if (resp.status === 429 || resp.status === 502 || resp.status === 503) {
         // Rate limited or overloaded — wait and retry
         const wait = (attempt + 1) * 3000;
         document.querySelector('.ld p').textContent =
@@ -558,7 +558,7 @@ async function doSearch() {
     const url = 'https://query.wikidata.org/sparql?query=' + encodeURIComponent(query) + '&format=json';
 
     // Fetch with timeout + retry
-    const data = await fetchWithRetry(url, 3);
+    const data = await fetchWithRetry(url, 4);
 
     const seen = new Set();
     currentResults = data.results.bindings
