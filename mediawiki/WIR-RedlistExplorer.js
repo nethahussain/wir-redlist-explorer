@@ -23,11 +23,18 @@
 'use strict';
 
 // Wait for the page content to be ready
-$( function () {
+mw.hook( 'wikipage.content' ).add( function ( $content ) {
 
 // Only run if the placeholder div exists on the page
 var container = document.getElementById( 'wir-redlist-explorer' );
 if ( !container ) return;
+
+// Prevent running twice
+if ( container.getAttribute( 'data-wir-loaded' ) ) return;
+container.setAttribute( 'data-wir-loaded', '1' );
+
+// Show loading feedback immediately
+container.innerHTML = '<p style="color:#54595d">⏳ Loading Wikidata Redlist Explorer…</p>';
 
 // ── OCCUPATION DATA ──────────────────────────────────────────────────────────
 var OCCUPATIONS = {
@@ -240,7 +247,7 @@ var lastQuery = '';
 var currentLimit = 500;
 
 // ── Build the UI using OOUI ──────────────────────────────────────────────────
-mw.loader.using( [ 'oojs-ui-core', 'oojs-ui-widgets', 'oojs-ui-windows' ] ).then( function () {
+mw.loader.using( [ 'oojs-ui-core', 'oojs-ui-widgets' ] ).then( function () {
 
 	// Build occupation options grouped
 	var occOptions = [];
@@ -515,8 +522,12 @@ mw.loader.using( [ 'oojs-ui-core', 'oojs-ui-widgets', 'oojs-ui-windows' ] ).then
 		}
 	}
 
+} ).catch( function ( err ) { // catch mw.loader.using errors
+	container.innerHTML = '<p style="color:#d33"><strong>Error loading UI components:</strong> ' +
+		String( err ) + '</p><p>Try <a href="' + mw.util.getUrl( mw.config.get( 'wgPageName' ) ) +
+		'">reloading the page</a>.</p>';
 } ); // end mw.loader.using
 
-} ); // end $( function )
+} ); // end mw.hook
 
 } )();
