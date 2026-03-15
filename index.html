@@ -49,8 +49,6 @@ a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}
 .go-btn{padding:9px 22px;background:var(--r);color:#fff;border:none;border-radius:3px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;transition:background .15s;white-space:nowrap;display:flex;align-items:center;gap:8px;align-self:flex-end}
 .go-btn:hover{background:var(--rd)}
 .go-btn.off{opacity:.4;cursor:not-allowed}
-.lucky-btn{padding:9px 18px;background:#fff;color:var(--r);border:2px solid var(--r);border-radius:3px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap;align-self:flex-end}
-.lucky-btn:hover{background:var(--r);color:#fff}
 .btn-spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
 .f-hint{width:100%;margin-top:4px;font-size:13px;color:var(--dim);font-style:italic}
@@ -172,7 +170,6 @@ tbody tr:hover{background:#ECEEF1}
       </select>
     </div>
     <button class="go-btn off" id="go-btn" onclick="doSearch()" disabled>Search Wikidata</button>
-    <button class="lucky-btn" onclick="doLucky()" title="Show the 10 most notable women missing from English Wikipedia">🎲 I'm feeling lucky</button>
     <p class="f-hint" id="f-hint">Select at least one occupation or country to search.</p>
   </div>
 
@@ -672,98 +669,12 @@ async function doSearch() {
   }
 }
 
-// ── I'M FEELING LUCKY ────────────────────────────────────────────────────────
-async function doLucky() {
-  isLoading = true;
-  const luckyBtn = document.querySelector('.lucky-btn');
-  luckyBtn.textContent = '🎲 Searching…';
-  luckyBtn.disabled = true;
-
-  const content = document.getElementById('content');
-  content.innerHTML = `
-    <div class="ld">
-      <div class="ld-spin"></div>
-      <p>Finding the most notable women missing from English Wikipedia…</p>
-    </div>`;
-
-  const query = `SELECT ?item ?itemLabel ?itemDescription
-  (SAMPLE(?_dob) AS ?dob) (SAMPLE(?_dod) AS ?dod)
-  (SAMPLE(?_countryLabel) AS ?countryLabel)
-  (GROUP_CONCAT(DISTINCT ?_occLabel; separator=", ") AS ?occupations)
-  (SAMPLE(?_image) AS ?image)
-  (COUNT(DISTINCT ?sitelink) AS ?sites)
-WHERE {
-  ?item wdt:P31 wd:Q5 ;
-        wdt:P21 wd:Q6581072 .
-  OPTIONAL { ?item wdt:P569 ?_dob . }
-  OPTIONAL { ?item wdt:P570 ?_dod . }
-  OPTIONAL { ?item wdt:P27 ?_country . ?_country rdfs:label ?_countryLabel . FILTER(LANG(?_countryLabel)="en") }
-  OPTIONAL { ?item wdt:P106 ?_occItem . ?_occItem rdfs:label ?_occLabel . FILTER(LANG(?_occLabel)="en") }
-  OPTIONAL { ?item wdt:P18 ?_image . }
-  OPTIONAL { ?sitelink schema:about ?item . }
-  FILTER NOT EXISTS {
-    ?article schema:about ?item ;
-             schema:isPartOf <https://en.wikipedia.org/> .
-  }
-  SERVICE wikibase:label { bd:serviceParam wikibase:language "en,mul" . }
-}
-GROUP BY ?item ?itemLabel ?itemDescription
-ORDER BY DESC(?sites)
-LIMIT 10`;
-
-  lastQuery = query;
-
-  try {
-    const url = 'https://query.wikidata.org/sparql?query=' + encodeURIComponent(query) + '&format=json';
-    const data = await fetchWithRetry(url, 4);
-
-    const seen = new Set();
-    currentResults = data.results.bindings
-      .map(b => ({
-        qid: getQid(b.item?.value),
-        name: b.itemLabel?.value || '',
-        description: b.itemDescription?.value || '',
-        dob: fmtDate(b.dob?.value),
-        dod: fmtDate(b.dod?.value),
-        country: b.countryLabel?.value || '',
-        occupations: b.occupations?.value || '',
-        image: b.image?.value || '',
-        sites: parseInt(b.sites?.value) || 0
-      }))
-      .filter(r => {
-        if (!r.qid || seen.has(r.qid) || /^Q\d+$/.test(r.name)) return false;
-        seen.add(r.qid);
-        return true;
-      });
-
-    // Override title for lucky results
-    selectedOcc = null;
-    selectedCty = null;
-    sortCol = 'sites';
-    sortDir = 'desc';
-    tableFilterText = '';
-    renderResults('🎲 Top 10 most notable women missing from English Wikipedia');
-  } catch(e) {
-    content.innerHTML = `
-      <div class="err"><div class="err-box">
-        <strong>Query error</strong>
-        <p>${esc(e.message)}</p>
-        <p style="margin-top:6px;font-size:12px">Try again in a few seconds.</p>
-        <p style="margin-top:8px"><button onclick="doLucky()" style="padding:6px 16px;cursor:pointer;border:1px solid #a2a9b1;border-radius:3px;background:#f8f9fa;font-family:inherit;font-size:14px">↻ Retry</button></p>
-      </div></div>`;
-  } finally {
-    isLoading = false;
-    luckyBtn.textContent = '🎲 I\'m feeling lucky';
-    luckyBtn.disabled = false;
-  }
-}
-
 // ── RENDER RESULTS ───────────────────────────────────────────────────────────
-function renderResults(customTitle) {
+function renderResults() {
   const titleParts = [];
   if (selectedOcc) titleParts.push(selectedOcc.name);
   if (selectedCty) titleParts.push(selectedCty.name);
-  const title = customTitle || ('Missing articles: ' + (titleParts.join(' — ') || 'Results'));
+  const title = titleParts.join(' — ');
 
   // Filter
   const q = tableFilterText.toLowerCase();
@@ -813,7 +724,7 @@ function renderResults(customTitle) {
   document.getElementById('content').innerHTML = `
     <div class="results">
       <div class="res-head">
-        <h2>${esc(title)}</h2>
+        <h2>Missing articles: ${esc(title)}</h2>
         <p class="res-intro">
           This table of missing women biographies was generated using
           <a href="https://www.wikidata.org" target="_blank">Wikidata</a> for
