@@ -12,14 +12,18 @@
 
 This tool queries [[Wikidata]] in real time to find notable women who have a Wikidata item but no English Wikipedia article. You can filter by '''occupation''', '''country''', or '''both simultaneously'''. Results match the format used in the [[Wikipedia:WikiProject Women in Red/Redlist index|Redlist index]].
 
-{{User:Netha_Hussain/WIR-RedlistExplorer-note}}
+A standalone version of this tool is also available at [https://nethahussain.github.io/wir-redlist-explorer/ nethahussain.github.io/wir-redlist-explorer] (no installation needed).
 
-<div id="wir-redlist-explorer">
-''Loading Redlist Explorer… If this message does not disappear, you may need to install the user script. Add the following to your [[Special:MyPage/common.js]]:''
+{{collapse top|title=How to enable the on-wiki version|bg=#f8f9fa}}
+To use the tool directly on this page, add the following two lines to your [[Special:MyPage/common.js]] and then reload this page:
 
-<code>importStylesheet('User:Netha_Hussain/WIR-RedlistExplorer.css');</code><br>
-<code>importScript('User:Netha_Hussain/WIR-RedlistExplorer.js');</code>
-</div>
+<syntaxhighlight lang="javascript">
+importStylesheet('User:Netha_Hussain/WIR-RedlistExplorer.css');
+importScript('User:Netha_Hussain/WIR-RedlistExplorer.js');
+</syntaxhighlight>
+{{collapse bottom}}
+
+<div id="wir-redlist-explorer"></div>
 
 {{clear}}
 
