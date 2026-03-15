@@ -624,14 +624,14 @@ function renderResults() {
         <table>
           <thead><tr>
             <th class="c-num">#</th>
-            <th class="sortable" onclick="onSort('name')">name${sortArrow('name')}</th>
-            <th>description</th>
-            <th class="sortable" onclick="onSort('occupations')">occupation (P106)${sortArrow('occupations')}</th>
-            <th class="sortable" onclick="onSort('country')">country of citizenship (P27)${sortArrow('country')}</th>
-            <th class="sortable" onclick="onSort('dob')">date of birth (P569)${sortArrow('dob')}</th>
-            <th class="sortable" onclick="onSort('dod')">date of death (P570)${sortArrow('dod')}</th>
-            <th>item</th>
-            <th class="sortable" onclick="onSort('sites')">sitelinks${sortArrow('sites')}</th>
+            <th class="c-name sortable" onclick="onSort('name')">name${sortArrow('name')}</th>
+            <th class="c-desc">description</th>
+            <th class="c-occ sortable" onclick="onSort('occupations')">occupation (P106)${sortArrow('occupations')}</th>
+            <th class="c-cty sortable" onclick="onSort('country')">country of citizenship (P27)${sortArrow('country')}</th>
+            <th class="c-date sortable" onclick="onSort('dob')">date of birth (P569)${sortArrow('dob')}</th>
+            <th class="c-date sortable" onclick="onSort('dod')">date of death (P570)${sortArrow('dod')}</th>
+            <th class="c-item">item</th>
+            <th class="c-sites sortable" onclick="onSort('sites')">sitelinks${sortArrow('sites')}</th>
           </tr></thead>
           <tbody>${rows}</tbody>
         </table>
