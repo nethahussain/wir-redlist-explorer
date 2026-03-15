@@ -22,6 +22,9 @@
 ( function () {
 'use strict';
 
+// Wait for the page content to be ready
+$( function () {
+
 // Only run if the placeholder div exists on the page
 var container = document.getElementById( 'wir-redlist-explorer' );
 if ( !container ) return;
@@ -513,5 +516,7 @@ mw.loader.using( [ 'oojs-ui-core', 'oojs-ui-widgets', 'oojs-ui-windows' ] ).then
 	}
 
 } ); // end mw.loader.using
+
+} ); // end $( function )
 
 } )();
