@@ -93,6 +93,8 @@ tbody tr:hover{background:#ECEEF1}
 
 .c-num{text-align:right;color:var(--dim);width:38px;font-size:12px}
 .c-name{white-space:nowrap}
+.c-img{width:50px;text-align:center;padding:2px}
+.c-img img{border-radius:3px;vertical-align:middle;max-height:50px;object-fit:cover}
 .c-desc{color:var(--dim);font-size:12px;max-width:240px}
 .c-occ{font-size:12px;max-width:200px}
 .c-cty{font-size:13px;white-space:nowrap}
@@ -112,7 +114,7 @@ tbody tr:hover{background:#ECEEF1}
   .hdr{padding:16px}.hdr h1{font-size:20px}
   .filters{padding:12px 16px;flex-direction:column}.dd{max-width:100%}
   .results{padding:12px 16px}
-  .c-desc,.c-occ{display:none}
+  .c-desc,.c-occ,.c-img{display:none}
   .res-filter{width:100%}
 }
 </style>
@@ -484,6 +486,7 @@ function buildQuery(occQIds, ctyQId, limit) {
   (SAMPLE(?_dob) AS ?dob) (SAMPLE(?_dod) AS ?dod)
   (SAMPLE(?_countryLabel) AS ?countryLabel)
   (GROUP_CONCAT(DISTINCT ?_occLabel; separator=", ") AS ?occupations)
+  (SAMPLE(?_image) AS ?image)
   (COUNT(DISTINCT ?sitelink) AS ?sites)
 WHERE {
   ?item wdt:P31 wd:Q5 ;
@@ -494,6 +497,7 @@ WHERE {
   OPTIONAL { ?item wdt:P570 ?_dod . }
   OPTIONAL { ?item wdt:P27 ?_country . ?_country rdfs:label ?_countryLabel . FILTER(LANG(?_countryLabel)="en") }
   OPTIONAL { ?item wdt:P106 ?_occItem . ?_occItem rdfs:label ?_occLabel . FILTER(LANG(?_occLabel)="en") }
+  OPTIONAL { ?item wdt:P18 ?_image . }
   OPTIONAL { ?sitelink schema:about ?item . }
   FILTER NOT EXISTS {
     ?article schema:about ?item ;
@@ -531,6 +535,13 @@ function esc(s) {
   const d = document.createElement('div');
   d.textContent = s;
   return d.innerHTML;
+}
+
+function thumbUrl(commonsUrl, width) {
+  if (!commonsUrl) return '';
+  // URL from SPARQL looks like http://commons.wikimedia.org/wiki/Special:FilePath/Name.jpg
+  // Append ?width=N for a thumbnail
+  return commonsUrl.replace('http://', 'https://') + '?width=' + (width || 50);
 }
 
 function openSparql() {
@@ -616,6 +627,7 @@ async function doSearch() {
         dod: fmtDate(b.dod?.value),
         country: b.countryLabel?.value || '',
         occupations: b.occupations?.value || '',
+        image: b.image?.value || '',
         sites: parseInt(b.sites?.value) || 0
       }))
       .filter(r => {
@@ -690,6 +702,7 @@ function renderResults() {
     rows += `<tr>
       <td class="c-num">${i+1}</td>
       <td class="c-name"><a href="https://en.wikipedia.org/w/index.php?title=${wpTitle}&action=edit&redlink=1" target="_blank" class="redlink" title="Create &quot;${esc(r.name)}&quot; on English Wikipedia">${esc(r.name)}</a></td>
+      <td class="c-img">${r.image ? '<img src="' + thumbUrl(r.image, 50) + '" loading="lazy" alt="" width="50">' : ''}</td>
       <td class="c-desc">${esc(r.description)}</td>
       <td class="c-occ">${esc(r.occupations)}</td>
       <td class="c-cty">${esc(r.country)}</td>
@@ -724,6 +737,7 @@ function renderResults() {
           <thead><tr>
             <th class="c-num">#</th>
             <th class="c-name sortable" onclick="onSort('name')">name${sortArrow('name')}</th>
+            <th class="c-img">image</th>
             <th class="c-desc">description</th>
             <th class="c-occ sortable" onclick="onSort('occupations')">occupation (P106)${sortArrow('occupations')}</th>
             <th class="c-cty sortable" onclick="onSort('country')">country of citizenship (P27)${sortArrow('country')}</th>
