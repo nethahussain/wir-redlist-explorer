@@ -3,13 +3,14 @@
 A standalone browser tool that queries Wikidata in real time to find notable women missing from English Wikipedia. Built for [WikiProject Women in Red](https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Women_in_Red).
 
 <p align="center">
-  <a href="https://nethahussain.github.io/wir-redlist-explorer/">
-    <img src="https://img.shields.io/badge/▶_LAUNCH_TOOL-nethahussain.github.io/wir--redlist--explorer-BA0000?style=for-the-badge&labelColor=8B0000" alt="Launch Tool">
+  <a href="https://wir-redlist-explorer.toolforge.org/">
+    <img src="https://img.shields.io/badge/▶_LAUNCH_TOOL-wir--redlist--explorer.toolforge.org-BA0000?style=for-the-badge&labelColor=8B0000" alt="Launch Tool">
   </a>
 </p>
 
 <p align="center">
-  <strong>👉 <a href="https://nethahussain.github.io/wir-redlist-explorer/">nethahussain.github.io/wir-redlist-explorer</a> 👈</strong>
+  <strong>👉 <a href="https://wir-redlist-explorer.toolforge.org/">wir-redlist-explorer.toolforge.org</a> 👈</strong><br>
+  <small>(also available via <a href="https://nethahussain.github.io/wir-redlist-explorer/">nethahussain.github.io/wir-redlist-explorer</a>, which redirects to Toolforge)</small>
 </p>
 
 ---

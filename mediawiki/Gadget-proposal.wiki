@@ -8,7 +8,7 @@
 
 A tool for [[Wikipedia:WikiProject Women in Red]] that queries [[Wikidata]] in real time to find notable women who have a Wikidata item but no English Wikipedia article. Users can filter by occupation (~200 options), country (~130 options), or both simultaneously. Results display in a standard wikitable with red-linked names (for article creation), description, occupation, country, dates, Wikidata item link, image thumbnails, and sitelink count.
 
-The tool is already deployed as a user script at [[User:Netha Hussain/WIR-RedlistExplorer.js]] and has a standalone version at [https://nethahussain.github.io/wir-redlist-explorer/ nethahussain.github.io/wir-redlist-explorer].
+The tool is already deployed as a user script at [[User:Netha Hussain/WIR-RedlistExplorer.js]] and has a standalone version at [https://wir-redlist-explorer.toolforge.org/ wir-redlist-explorer.toolforge.org].
 
 === Proposed gadget definition ===
 

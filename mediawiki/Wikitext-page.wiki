@@ -6,7 +6,7 @@ This tool queries [[Wikidata]] in real time to find notable women who have a Wik
 {| style="border: 2px solid #ba0000; border-radius: 8px; padding: 20px; margin: 16px 0; background: #fff5f5; width: 100%;"
 |-
 | style="text-align: center; font-size: 120%;" |
-'''[https://nethahussain.github.io/wir-redlist-explorer/ ▶ Launch the Wikidata Redlist Explorer]'''
+'''[https://wir-redlist-explorer.toolforge.org/ ▶ Launch the Wikidata Redlist Explorer]'''
 
 <span style="font-size: 90%; color: #555;">Opens in a new tab — no installation needed. Filter by occupation, country, or both.</span>
 |-
