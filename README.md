@@ -87,7 +87,7 @@ A version that runs natively on English Wikipedia as a user script is available 
 
 ## Other languages
 
-A Ukrainian version is available: [`tool-uk.html`](tool-uk.html). To translate the tool into another language, see the [Translation Guide](TRANSLATION_GUIDE.md).
+A Ukrainian version is available: [`tool-uk.html`](tool-uk.html) ([live demo](https://nethahussain.github.io/wir-redlist-explorer/tool-uk.html)). To translate the tool into another language, see the [Translation Guide](TRANSLATION_GUIDE.md).
 
 ## License
 
