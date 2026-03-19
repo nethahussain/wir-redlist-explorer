@@ -2,15 +2,784 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="refresh" content="0; url=https://wir-redlist-explorer.toolforge.org/">
-<title>Redirecting to Women in Red — Wikidata Redlist Explorer</title>
-<link rel="canonical" href="https://wir-redlist-explorer.toolforge.org/">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Women in Red — Wikidata Redlist Explorer</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>♀</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  body { font-family: sans-serif; text-align: center; padding: 60px 20px; color: #333; }
-  a { color: #BA0000; }
+:root {
+  --r:#BA0000;--rd:#8B0000;--rbg:#FFF3F3;
+  --blue:#0645AD;--bg:#F6F6F6;--surface:#FFF;
+  --border:#A2A9B1;--blight:#C8CCD1;--hdr:#EAECF0;
+  --txt:#202122;--dim:#54595D;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Source Sans 3',sans-serif;background:var(--bg);color:var(--txt);-webkit-font-smoothing:antialiased}
+a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}
+
+.page{max-width:1440px;margin:0 auto;background:var(--surface);min-height:100vh;border-left:1px solid var(--blight);border-right:1px solid var(--blight)}
+
+.hdr{background:linear-gradient(135deg,var(--rd),var(--r));color:#fff;padding:24px 32px 20px;border-bottom:3px solid #660000}
+.hdr h1{font-family:'Libre Baskerville',serif;font-size:26px;font-weight:700;margin-bottom:3px}
+.hdr .sub{font-size:14px;opacity:.85}
+.hdr-links{margin-top:8px;font-size:13px;display:flex;gap:14px;flex-wrap:wrap}
+.hdr-links a{color:#FFD6D6;border-bottom:1px solid rgba(255,214,214,.35)}
+.hdr-links a:hover{color:#fff;border-bottom-color:#fff;text-decoration:none}
+
+.filters{padding:16px 32px;background:var(--rbg);border-bottom:1px solid var(--blight);display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap}
+.dd{position:relative;flex:1;min-width:200px;max-width:340px}
+.dd-trigger{width:100%;display:flex;flex-direction:column;align-items:flex-start;padding:5px 12px 7px;background:#fff;border:1px solid var(--border);border-radius:3px;cursor:pointer;font-family:inherit;font-size:14px;position:relative;transition:border-color .15s}
+.dd-trigger:hover{border-color:var(--r)}
+.dd-trigger.has-val{border-color:var(--r);background:#FFF8F8}
+.dd-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--dim)}
+.dd-val{font-size:15px;color:var(--txt);font-weight:500}
+.dd-chev{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--dim)}
+.dd-menu{position:absolute;top:calc(100% + 2px);left:0;right:0;background:#fff;border:1px solid var(--border);border-radius:3px;box-shadow:0 6px 20px rgba(0,0,0,.12);z-index:1000;max-height:370px;overflow-y:auto;scrollbar-width:thin}
+.dd-search{width:100%;padding:9px 12px;border:none;border-bottom:1px solid var(--blight);font-family:inherit;font-size:14px;outline:none}
+.dd-group{padding:7px 12px 3px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--rd);background:#FAFAFA;border-top:1px solid var(--blight);position:sticky;top:0;z-index:1}
+.dd-item{display:block;width:100%;text-align:left;padding:6px 12px 6px 20px;background:none;border:none;font-family:inherit;font-size:14px;color:var(--txt);cursor:pointer;transition:background .1s}
+.dd-item:hover{background:var(--rbg)}
+.dd-item.sel{background:#FFE0E0;font-weight:600;color:var(--rd)}
+.dd-item.dd-clear{color:var(--r);font-weight:500;border-bottom:1px solid var(--blight);padding-left:12px}
+
+.f-limit{display:flex;flex-direction:column;gap:2px}
+.f-limit label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--dim)}
+.f-limit select{padding:7px 8px;border:1px solid var(--border);border-radius:3px;font-family:inherit;font-size:14px;background:#fff;cursor:pointer}
+
+.go-btn{padding:9px 22px;background:var(--r);color:#fff;border:none;border-radius:3px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;transition:background .15s;white-space:nowrap;display:flex;align-items:center;gap:8px;align-self:flex-end}
+.go-btn:hover{background:var(--rd)}
+.go-btn.off{opacity:.4;cursor:not-allowed}
+.btn-spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.f-hint{width:100%;margin-top:4px;font-size:13px;color:var(--dim);font-style:italic}
+
+.welcome{padding:56px 32px;text-align:center}
+.welcome h2{font-family:'Libre Baskerville',serif;font-size:22px;color:var(--rd);margin-bottom:14px}
+.welcome p{font-size:15px;color:var(--dim);max-width:640px;margin:0 auto 10px;line-height:1.65}
+.wl{color:var(--r);font-weight:600}
+
+.ld{padding:72px 32px;text-align:center}
+.ld-spin{width:30px;height:30px;border:3px solid var(--blight);border-top-color:var(--r);border-radius:50%;animation:sp .7s linear infinite;margin:0 auto 14px}
+.ld p{color:var(--dim);font-size:14px}
+.ld .ld-sub{margin-top:5px;font-size:12px;color:#999}
+
+.err{padding:36px 32px;text-align:center}
+.err-box{display:inline-block;background:#FFF0F0;border:1px solid #FFCCCC;border-left:4px solid var(--r);padding:18px 24px;border-radius:3px;text-align:left;max-width:540px}
+.err-box strong{color:var(--rd)}
+.err-box p{margin-top:6px;font-size:14px;color:var(--dim);line-height:1.5}
+
+.results{padding:18px 32px 36px}
+.res-head{margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--blight)}
+.res-head h2{font-family:'Libre Baskerville',serif;font-size:19px;color:var(--rd);margin-bottom:8px}
+.res-intro{font-size:13px;color:var(--dim);line-height:1.6}
+.res-intro a{color:var(--blue)}
+
+.res-toolbar{display:flex;align-items:center;gap:14px;margin-bottom:6px;flex-wrap:wrap}
+.res-count{font-size:14px;color:var(--dim)}
+.res-filter{padding:5px 10px;border:1px solid var(--border);border-radius:3px;font-family:inherit;font-size:13px;width:200px}
+.res-filter:focus{outline:none;border-color:var(--r)}
+.sparql-btn{font-size:12px;color:var(--blue);border:1px solid var(--blight);padding:3px 10px;border-radius:3px;background:var(--bg)}
+.sparql-btn:hover{background:#E8E8E8;text-decoration:none}
+
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px;line-height:1.5;border:1px solid var(--blight)}
+thead tr{background:var(--hdr)}
+th{padding:7px 6px;text-align:left;font-size:12px;font-weight:700;color:var(--txt);border:1px solid var(--blight);white-space:nowrap;user-select:none;vertical-align:bottom}
+th.sortable{cursor:pointer}th.sortable:hover{background:#D9DDE2}
+.sa{font-size:10px}.sa.dim{opacity:.3}
+td{padding:4px 6px;border:1px solid var(--blight);vertical-align:top}
+tbody tr:nth-child(even){background:#F8F9FA}
+tbody tr:hover{background:#ECEEF1}
+
+.c-num{text-align:right;color:var(--dim);width:38px;font-size:12px}
+.c-name{white-space:nowrap}
+.c-img{width:50px;text-align:center;padding:2px}
+.c-img img{border-radius:3px;vertical-align:middle;max-height:50px;object-fit:cover}
+.c-desc{color:var(--dim);font-size:12px;max-width:240px}
+.c-occ{font-size:12px;max-width:200px}
+.c-cty{font-size:13px;white-space:nowrap}
+.c-date{white-space:nowrap;font-size:12px;text-align:center}
+.c-item{white-space:nowrap;font-size:12px}
+.c-sites{text-align:right;font-weight:600;width:56px}
+
+.redlink{color:var(--r) !important;text-decoration:none}
+.redlink:hover{text-decoration:underline}
+.wd-link{color:var(--blue);font-family:monospace;font-size:12px}
+
+.empty-msg{padding:36px;text-align:center;color:var(--dim);font-size:15px}
+.res-foot{margin-top:14px;padding-top:10px;border-top:1px solid var(--blight);font-size:13px;color:var(--dim)}
+.res-foot a{color:var(--blue)}
+
+.page-footer{padding:16px 32px;border-top:1px solid var(--blight);font-size:12px;color:var(--dim);text-align:center}
+.page-footer a{color:var(--blue)}
+
+@media(max-width:768px){
+  .hdr{padding:16px}.hdr h1{font-size:20px}
+  .filters{padding:12px 16px;flex-direction:column}.dd{max-width:100%}
+  .results{padding:12px 16px}
+  .c-desc,.c-occ,.c-img{display:none}
+  .res-filter{width:100%}
+}
 </style>
 </head>
 <body>
-<p>Redirecting to <a href="https://wir-redlist-explorer.toolforge.org/">wir-redlist-explorer.toolforge.org</a>…</p>
+<div class="page" id="app">
+  <!-- Header -->
+  <header class="hdr">
+    <h1>♀ Women in Red — Wikidata Redlist Explorer</h1>
+    <p class="sub">Find notable women missing from English Wikipedia · Live queries from Wikidata SPARQL</p>
+    <div class="hdr-links">
+      <a href="https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Women_in_Red" target="_blank">WikiProject Women in Red</a>
+      <a href="https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Women_in_Red/Redlist_index" target="_blank">Redlist Index</a>
+      <a href="https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Women_in_Red/Wikidata_redlist_guide" target="_blank">Wikidata Guide</a>
+      <a href="https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Women_in_Red/How_to_add_names_to_Women_in_Red_lists" target="_blank">How to Add Names</a>
+    </div>
+  </header>
+
+  <!-- Filters -->
+  <div class="filters">
+    <div class="dd" id="occ-dd">
+      <button class="dd-trigger" onclick="toggleDropdown('occ')">
+        <span class="dd-label">Occupation</span>
+        <span class="dd-val" id="occ-val">Any</span>
+        <span class="dd-chev">▾</span>
+      </button>
+      <div class="dd-menu" id="occ-menu" style="display:none">
+        <input class="dd-search" id="occ-search" placeholder="Search occupations…" oninput="filterDropdown('occ')">
+        <div id="occ-items"></div>
+      </div>
+    </div>
+    <div class="dd" id="cty-dd">
+      <button class="dd-trigger" onclick="toggleDropdown('cty')">
+        <span class="dd-label">Country</span>
+        <span class="dd-val" id="cty-val">Any</span>
+        <span class="dd-chev">▾</span>
+      </button>
+      <div class="dd-menu" id="cty-menu" style="display:none">
+        <input class="dd-search" id="cty-search" placeholder="Search countries…" oninput="filterDropdown('cty')">
+        <div id="cty-items"></div>
+      </div>
+    </div>
+    <div class="f-limit">
+      <label>Limit</label>
+      <select id="limit-select">
+        <option value="100">100</option>
+        <option value="200">200</option>
+        <option value="500" selected>500</option>
+        <option value="1000">1000</option>
+      </select>
+    </div>
+    <button class="go-btn off" id="go-btn" onclick="doSearch()" disabled>Search Wikidata</button>
+    <p class="f-hint" id="f-hint">Select at least one occupation or country to search.</p>
+  </div>
+
+  <!-- Content -->
+  <div id="content">
+    <div class="welcome">
+      <h2>Missing articles by occupation and country</h2>
+      <p>
+        This tool queries <a class="wl" href="https://www.wikidata.org" target="_blank">Wikidata</a> in
+        real time to find women who have a Wikidata item but no English Wikipedia article.
+        Filter by <strong>occupation</strong>, by <strong>country</strong>, or by <strong>both at once</strong>.
+      </p>
+      <p>
+        Results match the format used on the
+        <a class="wl" href="https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Women_in_Red/Redlist_index" target="_blank">
+          Women in Red Redlist Index
+        </a> — each row shows the woman's name (as a red link for article creation), description, occupation (P106),
+        country of citizenship (P27), date of birth (P569), date of death (P570), Wikidata item ID, and sitelink count.
+      </p>
+      <p style="margin-top:18px;font-size:13px;font-style:italic;color:#999">
+        Select an occupation and/or a country above, then click <strong>Search Wikidata</strong>.
+      </p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="page-footer">
+    Created by <a href="https://en.wikipedia.org/wiki/User:Netha_Hussain" target="_blank">Netha Hussain</a> using Claude AI (Opus 4.6). Contact: nethahussain&#64;gmail.com. Source code: <a href="https://github.com/nethahussain/wir-redlist-explorer" target="_blank">GitHub</a>.
+  </div>
+</div>
+
+<script>
+// ── DATA ─────────────────────────────────────────────────────────────────────
+const OCCUPATIONS = {
+  "Activism & Politics": {
+    "Activists":["Q15253558"],"Civil rights activists":["Q3745750"],"Diplomats":["Q193391"],
+    "Feminists":["Q21507383"],"Human rights activists":["Q1476215"],"Labor activists":["Q15627169"],
+    "Monarchs":["Q116"],"Nobles":["Q2478141"],"Politicians":["Q82955"],
+    "Resistance fighters":["Q1397808"],"Revolutionaries":["Q3242115"],
+    "Social workers":["Q1587565"],"Suffragists":["Q29424"],"Trade unionists":["Q15627169"]
+  },
+  "Arts & Visual Arts": {
+    "Animators":["Q266569"],"Architects":["Q42973"],"Calligraphers":["Q3303330"],
+    "Cartoonists":["Q1114448"],"Ceramicists":["Q7541856"],"Comics artists":["Q15296938"],
+    "Costume designers":["Q1323191"],"Engravers":["Q329439"],"Graphic designers":["Q627325"],
+    "Illustrators":["Q644687"],"Interior designers":["Q2895295"],"Jewellery designers":["Q2519376"],
+    "Miniaturists":["Q10862983"],"Muralists":["Q1281618"],"Painters":["Q1028181"],
+    "Photographers":["Q33231"],"Printmakers":["Q11569986"],"Sculptors":["Q1281618"],
+    "Textile artists":["Q5322166"],"Visual artists":["Q3391743"],"Weavers":["Q18939491"]
+  },
+  "Business & Economics": {
+    "Bankers":["Q806798"],"Businesspeople":["Q43845","Q131524"],"Economists":["Q188094"],
+    "Industrialists":["Q6606110"],"Managers":["Q2462658"]
+  },
+  "Education & Academia": {
+    "Academics":["Q3400985"],"Educational specialists":["Q5341303","Q1569495","Q901222"],
+    "Educators":["Q1056391","Q37226","Q974144"],"Librarians":["Q182436"],
+    "Linguists":["Q14467526"],"Philologists":["Q13418253"],"Professors":["Q121594"],
+    "Researchers":["Q1650915"],"University teachers":["Q1622272"]
+  },
+  "Law & Justice": {
+    "Judges":["Q16533"],"Lawyers":["Q40348"],"Magistrates":["Q4594605"],
+    "Notaries":["Q189010"],"Prosecutors":["Q600751"]
+  },
+  "Literature & Writing": {
+    "Art critics":["Q6430706"],"Art historians":["Q1792450"],"Authors":["Q482980"],
+    "Biographers":["Q18814623"],"Bloggers":["Q877517"],"Children's writers":["Q4853732"],
+    "Columnists":["Q1086863"],"Comics writers":["Q4853732"],"Critics":["Q4263842"],
+    "Editors":["Q1607826"],"Essayists":["Q11774202"],"Folklorists":["Q15214752"],
+    "Historians":["Q201788"],"Journalists":["Q1930187"],"Literary critics":["Q4263842"],
+    "Novelists":["Q6625963"],"Playwrights":["Q214917"],"Poets":["Q49757"],
+    "Publishers":["Q2516866"],"Screenwriters":["Q28389"],"Songwriters":["Q753110"],
+    "Translators":["Q333634"],"Writers":["Q36180"]
+  },
+  "Media & Entertainment": {
+    "Actresses":["Q33999"],"Comedians":["Q245068"],"Film critics":["Q1350157"],
+    "Film directors":["Q2526255"],"Film producers":["Q3282637"],"Models":["Q4610556"],
+    "Presenters":["Q13590141"],"Radio presenters":["Q2722764"],
+    "Television presenters":["Q947873"],"Voice actresses":["Q2405480"]
+  },
+  "Performing Arts": {
+    "Choreographers":["Q2490358"],"Circus performers":["Q6660286"],"Composers":["Q36834"],
+    "Conductors (music)":["Q158852"],"Curators":["Q674426"],"Dancers":["Q5716684"],
+    "Flautists":["Q12902372"],"Guitarists":["Q855091"],"Harpists":["Q855091"],
+    "Musicians":["Q639669"],"Opera singers":["Q2865819"],"Organists":["Q765778"],
+    "Pianists":["Q486748"],"Singers":["Q177220"],"Theatre directors":["Q3387717"],
+    "Violinists":["Q1259917"],"Violoncellists":["Q1323883"]
+  },
+  "Religion & Spirituality": {
+    "Abbesses":["Q75178"],"Missionaries":["Q219477"],"Nuns":["Q191808"],
+    "Religious leaders":["Q2259451"],"Saints":["Q43115"],"Theologians":["Q1234713"]
+  },
+  "Science & Technology": {
+    "Anthropologists":["Q4773904"],"Archaeologists":["Q3621491"],"Astronomers":["Q11063"],
+    "Astrophysicists":["Q752129"],"Biochemists":["Q15142903"],"Biologists":["Q864503"],
+    "Botanists":["Q2374149"],"Chemists":["Q593644"],"Computer scientists":["Q82594"],
+    "Ecologists":["Q350979"],"Entomologists":["Q3055126"],"Epidemiologists":["Q15634566"],
+    "Geneticists":["Q3126128"],"Geographers":["Q901402"],"Geologists":["Q520549"],
+    "Marine biologists":["Q2867476"],"Mathematicians":["Q170790"],
+    "Meteorologists":["Q12050421"],"Microbiologists":["Q15917187"],
+    "Neuroscientists":["Q15634566"],"Paleontologists":["Q1662561"],
+    "Physicists":["Q169470"],"Statisticians":["Q2732142"],"Zoologists":["Q350979"]
+  },
+  "Medicine & Health": {
+    "Dentists":["Q27349"],"Dermatologists":["Q1789414"],"Gynecologists":["Q15924224"],
+    "Midwives":["Q185196"],"Nurses":["Q186360"],"Oncologists":["Q4165402"],
+    "Ophthalmologists":["Q15924610"],"Pathologists":["Q4202929"],"Pediatricians":["Q1919436"],
+    "Pharmacists":["Q105186"],"Physicians":["Q39631"],"Psychiatrists":["Q211346"],
+    "Psychologists":["Q212980"],"Radiologists":["Q1569276"],"Sociologists":["Q2306091"],
+    "Surgeons":["Q774306"],"Veterinarians":["Q202883"]
+  },
+  "Sports": {
+    "Alpine skiers":["Q4144610"],"Archers":["Q13382576"],"Athletes":["Q11513337"],
+    "Badminton players":["Q13141064"],"Basketball players":["Q3665646"],
+    "Boxers":["Q11338576"],"Canoeists":["Q13382608"],"Chess players":["Q10873124"],
+    "Cricketers":["Q12299841"],"Cross-country skiers":["Q13382519"],
+    "Cyclists":["Q2309784"],"Divers":["Q13381427"],"Equestrians":["Q13382603"],
+    "Fencers":["Q13381689"],"Figure skaters":["Q13381572"],
+    "Football players":["Q937857"],"Golfers":["Q13156709"],
+    "Gymnasts":["Q15117302"],"Handball players":["Q13365117"],
+    "Hockey players":["Q11774891"],"Judokas":["Q6665249"],
+    "Martial artists":["Q14373094"],"Rowers":["Q13382519"],
+    "Rugby players":["Q14089670"],"Sailors":["Q13382519"],
+    "Shooters":["Q13382608"],"Speed skaters":["Q15117395"],
+    "Swimmers":["Q10843402"],"Table tennis players":["Q13219587"],
+    "Tennis players":["Q10833314"],"Track & field athletes":["Q11513337"],
+    "Volleyball players":["Q15117415"],"Water polo players":["Q13382608"],
+    "Weightlifters":["Q13381376"],"Wrestlers":["Q13474373"]
+  },
+  "Other": {
+    "Astronauts":["Q11631"],"Aviators":["Q2095549"],"Collectors":["Q3243461"],
+    "Cooks & chefs":["Q3499072"],"Engineers":["Q81096"],"Environmentalists":["Q15839134"],
+    "Explorers":["Q11900058"],"Fashion designers":["Q3501317"],"Firefighters":["Q107711"],
+    "Inventors":["Q205375"],"Military personnel":["Q47064"],"Philanthropists":["Q12362622"],
+    "Pilots":["Q158063"],"Police officers":["Q361593"],"Spies":["Q9352089"],
+    "Technologists":["Q5482740"]
+  }
+};
+
+const COUNTRIES = {
+  "Africa": {
+    "Algeria":"Q262","Cameroon":"Q1009","DR Congo":"Q974","Egypt":"Q79",
+    "Ethiopia":"Q115","Ghana":"Q117","Kenya":"Q114","Madagascar":"Q1019",
+    "Malawi":"Q1020","Morocco":"Q1028","Mozambique":"Q1029","Nigeria":"Q1033",
+    "Rwanda":"Q1037","Senegal":"Q1041","South Africa":"Q258",
+    "Tanzania":"Q924","Tunisia":"Q948","Uganda":"Q1036","Zimbabwe":"Q954"
+  },
+  "Americas": {
+    "Argentina":"Q414","Bolivia":"Q750","Brazil":"Q155","Canada":"Q16",
+    "Chile":"Q298","Colombia":"Q739","Cuba":"Q241","Ecuador":"Q736",
+    "Guatemala":"Q774","Haiti":"Q790","Jamaica":"Q766","Mexico":"Q96",
+    "Paraguay":"Q733","Peru":"Q419","Trinidad & Tobago":"Q754",
+    "United States":"Q30","Uruguay":"Q77","Venezuela":"Q717"
+  },
+  "Asia": {
+    "Afghanistan":"Q889","Bangladesh":"Q902","Cambodia":"Q424",
+    "China":"Q148","India":"Q668","Indonesia":"Q252","Iran":"Q794",
+    "Iraq":"Q796","Israel":"Q801","Japan":"Q17","Kazakhstan":"Q232",
+    "South Korea":"Q884","Malaysia":"Q833","Mongolia":"Q711",
+    "Myanmar":"Q836","Nepal":"Q837","Pakistan":"Q843",
+    "Philippines":"Q928","Singapore":"Q334","Sri Lanka":"Q854",
+    "Taiwan":"Q865","Thailand":"Q869","Turkey":"Q43","Vietnam":"Q881"
+  },
+  "Europe": {
+    "Albania":"Q222","Austria":"Q40","Belgium":"Q31",
+    "Bosnia & Herzegovina":"Q225","Bulgaria":"Q219","Croatia":"Q224",
+    "Czech Republic":"Q213","Denmark":"Q35","Estonia":"Q191",
+    "Finland":"Q33","France":"Q142","Germany":"Q183","Greece":"Q41",
+    "Hungary":"Q28","Iceland":"Q189","Ireland":"Q27","Italy":"Q38",
+    "Latvia":"Q211","Lithuania":"Q37","Netherlands":"Q55","Norway":"Q20",
+    "Poland":"Q36","Portugal":"Q45","Romania":"Q218","Russia":"Q159",
+    "Serbia":"Q403","Slovakia":"Q214","Slovenia":"Q215","Spain":"Q29",
+    "Sweden":"Q34","Switzerland":"Q39","Ukraine":"Q212",
+    "United Kingdom":"Q145"
+  },
+  "West Asia": {
+    "Bahrain":"Q398","Jordan":"Q810","Kuwait":"Q817","Lebanon":"Q822",
+    "Oman":"Q842","Palestine":"Q219060","Qatar":"Q846",
+    "Saudi Arabia":"Q851","Syria":"Q858","United Arab Emirates":"Q878",
+    "Yemen":"Q805"
+  },
+  "Oceania & Pacific": {
+    "Australia":"Q408","Fiji":"Q712","New Zealand":"Q664",
+    "Papua New Guinea":"Q691","Samoa":"Q683"
+  }
+};
+
+// ── STATE ────────────────────────────────────────────────────────────────────
+let selectedOcc = null;   // {name, qids, group}
+let selectedCty = null;   // {name, qId, region}
+let currentResults = [];
+let sortCol = "sites";
+let sortDir = "desc";
+let tableFilterText = "";
+let isLoading = false;
+let lastQuery = "";
+
+// ── FLATTEN ──────────────────────────────────────────────────────────────────
+function flattenOcc() {
+  const out = [];
+  for (const [group, items] of Object.entries(OCCUPATIONS))
+    for (const [name, qids] of Object.entries(items))
+      out.push({group, name, qids});
+  out.sort((a,b) => a.name.localeCompare(b.name));
+  return out;
+}
+function flattenCty() {
+  const out = [];
+  for (const [region, items] of Object.entries(COUNTRIES))
+    for (const [name, qId] of Object.entries(items))
+      out.push({region, name, qId});
+  out.sort((a,b) => a.name.localeCompare(b.name));
+  return out;
+}
+const ALL_OCC = flattenOcc();
+const ALL_CTY = flattenCty();
+
+// ── DROPDOWN LOGIC ───────────────────────────────────────────────────────────
+function buildDropdownItems(type) {
+  const container = document.getElementById(type + '-items');
+  const items = type === 'occ' ? ALL_OCC : ALL_CTY;
+  const showGroups = type === 'occ';
+  const groupKey = type === 'occ' ? 'group' : 'region';
+  const search = document.getElementById(type + '-search').value.toLowerCase();
+  const selected = type === 'occ' ? selectedOcc : selectedCty;
+
+  const filtered = items.filter(o =>
+    o.name.toLowerCase().includes(search) ||
+    (showGroups && o[groupKey].toLowerCase().includes(search))
+  );
+
+  let html = '';
+  if (selected) {
+    html += `<button class="dd-item dd-clear" onclick="clearSelection('${type}')">✕ Clear</button>`;
+  }
+  let lastGroup = '';
+  for (const o of filtered) {
+    if (showGroups && o[groupKey] !== lastGroup) {
+      lastGroup = o[groupKey];
+      html += `<div class="dd-group">${esc(lastGroup)}</div>`;
+    }
+    const isSel = selected && selected.name === o.name;
+    const pad = showGroups ? '' : ' style="padding-left:12px"';
+    html += `<button class="dd-item${isSel ? ' sel' : ''}"${pad} onclick="selectItem('${type}','${esc(o.name)}')">${esc(o.name)}</button>`;
+  }
+  container.innerHTML = html;
+}
+
+function toggleDropdown(type) {
+  const other = type === 'occ' ? 'cty' : 'occ';
+  document.getElementById(other + '-menu').style.display = 'none';
+  const menu = document.getElementById(type + '-menu');
+  const vis = menu.style.display === 'none';
+  menu.style.display = vis ? 'block' : 'none';
+  if (vis) {
+    document.getElementById(type + '-search').value = '';
+    buildDropdownItems(type);
+    document.getElementById(type + '-search').focus();
+  }
+}
+
+function filterDropdown(type) {
+  buildDropdownItems(type);
+}
+
+function selectItem(type, name) {
+  if (type === 'occ') {
+    selectedOcc = ALL_OCC.find(o => o.name === name) || null;
+    document.getElementById('occ-val').textContent = name;
+    document.getElementById('occ-dd').querySelector('.dd-trigger').classList.add('has-val');
+  } else {
+    selectedCty = ALL_CTY.find(c => c.name === name) || null;
+    document.getElementById('cty-val').textContent = name;
+    document.getElementById('cty-dd').querySelector('.dd-trigger').classList.add('has-val');
+  }
+  document.getElementById(type + '-menu').style.display = 'none';
+  updateSearchBtn();
+}
+
+function clearSelection(type) {
+  if (type === 'occ') {
+    selectedOcc = null;
+    document.getElementById('occ-val').textContent = 'Any';
+    document.getElementById('occ-dd').querySelector('.dd-trigger').classList.remove('has-val');
+  } else {
+    selectedCty = null;
+    document.getElementById('cty-val').textContent = 'Any';
+    document.getElementById('cty-dd').querySelector('.dd-trigger').classList.remove('has-val');
+  }
+  document.getElementById(type + '-menu').style.display = 'none';
+  updateSearchBtn();
+}
+
+function updateSearchBtn() {
+  const btn = document.getElementById('go-btn');
+  const hint = document.getElementById('f-hint');
+  const can = selectedOcc || selectedCty;
+  btn.disabled = !can || isLoading;
+  btn.classList.toggle('off', !can);
+  hint.style.display = can ? 'none' : 'block';
+}
+
+// Close dropdowns on outside click
+document.addEventListener('mousedown', function(e) {
+  if (!document.getElementById('occ-dd').contains(e.target))
+    document.getElementById('occ-menu').style.display = 'none';
+  if (!document.getElementById('cty-dd').contains(e.target))
+    document.getElementById('cty-menu').style.display = 'none';
+});
+
+// ── SPARQL ───────────────────────────────────────────────────────────────────
+function buildQuery(occQIds, ctyQId, limit) {
+  const hasOcc = occQIds && occQIds.length > 0;
+  const hasCty = !!ctyQId;
+  const occValues = hasOcc ? occQIds.map(q => 'wd:' + q).join(' ') : '';
+  const occFilter = hasOcc ? '?item wdt:P106 ?occ . VALUES ?occ { ' + occValues + ' }' : '';
+  const ctyFilter = hasCty
+    ? '{ { ?item (wdt:P27|wdt:P17|wdt:P495|wdt:P1532) wd:' + ctyQId + ' . } UNION { ?item (wdt:P19/wdt:P17) wd:' + ctyQId + ' . } }'
+    : '';
+
+  return `SELECT ?item ?itemLabel ?itemDescription
+  (SAMPLE(?_dob) AS ?dob) (SAMPLE(?_dod) AS ?dod)
+  (SAMPLE(?_countryLabel) AS ?countryLabel)
+  (GROUP_CONCAT(DISTINCT ?_occLabel; separator=", ") AS ?occupations)
+  (SAMPLE(?_image) AS ?image)
+  (COUNT(DISTINCT ?sitelink) AS ?sites)
+WHERE {
+  ?item wdt:P31 wd:Q5 ;
+        wdt:P21 wd:Q6581072 .
+  ${occFilter}
+  ${ctyFilter}
+  OPTIONAL { ?item wdt:P569 ?_dob . }
+  OPTIONAL { ?item wdt:P570 ?_dod . }
+  OPTIONAL { ?item wdt:P27 ?_country . ?_country rdfs:label ?_countryLabel . FILTER(LANG(?_countryLabel)="en") }
+  OPTIONAL { ?item wdt:P106 ?_occItem . ?_occItem rdfs:label ?_occLabel . FILTER(LANG(?_occLabel)="en") }
+  OPTIONAL { ?item wdt:P18 ?_image . }
+  OPTIONAL { ?sitelink schema:about ?item . }
+  FILTER NOT EXISTS {
+    ?article schema:about ?item ;
+             schema:isPartOf <https://en.wikipedia.org/> .
+  }
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en,mul" . }
+}
+GROUP BY ?item ?itemLabel ?itemDescription
+ORDER BY DESC(?sites)
+LIMIT ${limit}`;
+}
+
+function fmtDate(ds) {
+  if (!ds) return '';
+  try {
+    const d = new Date(ds);
+    if (isNaN(d)) return ds;
+    const y = d.getUTCFullYear();
+    const m = d.getUTCMonth() + 1;
+    const day = d.getUTCDate();
+    if (y < 0) return Math.abs(y) + ' BCE';
+    if (m === 1 && day === 1) return '' + y;
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return day + ' ' + months[m-1] + ' ' + y;
+  } catch(e) { return ds; }
+}
+
+function getQid(uri) {
+  if (!uri) return '';
+  const m = uri.match(/Q\d+$/);
+  return m ? m[0] : '';
+}
+
+function esc(s) {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+function thumbUrl(commonsUrl, width) {
+  if (!commonsUrl) return '';
+  // URL from SPARQL looks like http://commons.wikimedia.org/wiki/Special:FilePath/Name.jpg
+  // Append ?width=N for a thumbnail
+  return commonsUrl.replace('http://', 'https://') + '?width=' + (width || 50);
+}
+
+function openSparql() {
+  if (lastQuery) {
+    window.open('https://query.wikidata.org/#' + encodeURIComponent(lastQuery), '_blank');
+  }
+}
+
+async function fetchWithRetry(url, maxRetries) {
+  let lastError;
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 60000); // 60s timeout
+      const resp = await fetch(url, {
+        headers: { 'Accept': 'application/sparql-results+json' },
+        signal: controller.signal
+      });
+      clearTimeout(timeout);
+      if (resp.status === 429 || resp.status === 502 || resp.status === 503) {
+        // Rate limited or overloaded — wait and retry
+        const wait = (attempt + 1) * 3000;
+        document.querySelector('.ld p').textContent =
+          'Server busy, retrying in ' + ((wait/1000)|0) + 's… (attempt ' + (attempt+2) + '/' + maxRetries + ')';
+        await new Promise(r => setTimeout(r, wait));
+        continue;
+      }
+      if (!resp.ok) throw new Error('SPARQL ' + resp.status + ': ' + resp.statusText);
+      return await resp.json();
+    } catch(e) {
+      lastError = e;
+      if (e.name === 'AbortError') {
+        lastError = new Error('Query timed out after 60 seconds');
+      }
+      if (attempt < maxRetries - 1) {
+        const wait = (attempt + 1) * 2000;
+        const ldP = document.querySelector('.ld p');
+        if (ldP) ldP.textContent =
+          'Connection issue, retrying in ' + ((wait/1000)|0) + 's… (attempt ' + (attempt+2) + '/' + maxRetries + ')';
+        await new Promise(r => setTimeout(r, wait));
+      }
+    }
+  }
+  throw lastError;
+}
+
+// ── SEARCH ───────────────────────────────────────────────────────────────────
+async function doSearch() {
+  if (!selectedOcc && !selectedCty) return;
+  isLoading = true;
+  updateSearchBtn();
+  document.getElementById('go-btn').innerHTML = '<span class="btn-spin"></span> Querying…';
+
+  const content = document.getElementById('content');
+  content.innerHTML = `
+    <div class="ld">
+      <div class="ld-spin"></div>
+      <p>Querying Wikidata SPARQL endpoint for missing women…</p>
+      <p class="ld-sub">Complex queries may take 10–30 seconds</p>
+    </div>`;
+
+  const limit = parseInt(document.getElementById('limit-select').value);
+
+  try {
+    const query = buildQuery(
+      selectedOcc ? selectedOcc.qids : null,
+      selectedCty ? selectedCty.qId : null,
+      limit
+    );
+    lastQuery = query;
+    const url = 'https://query.wikidata.org/sparql?query=' + encodeURIComponent(query) + '&format=json';
+
+    // Fetch with timeout + retry
+    const data = await fetchWithRetry(url, 4);
+
+    const seen = new Set();
+    currentResults = data.results.bindings
+      .map(b => ({
+        qid: getQid(b.item?.value),
+        name: b.itemLabel?.value || '',
+        description: b.itemDescription?.value || '',
+        dob: fmtDate(b.dob?.value),
+        dod: fmtDate(b.dod?.value),
+        country: b.countryLabel?.value || '',
+        occupations: b.occupations?.value || '',
+        image: b.image?.value || '',
+        sites: parseInt(b.sites?.value) || 0
+      }))
+      .filter(r => {
+        if (!r.qid || seen.has(r.qid) || /^Q\d+$/.test(r.name)) return false;
+        seen.add(r.qid);
+        return true;
+      });
+
+    sortCol = 'sites';
+    sortDir = 'desc';
+    tableFilterText = '';
+    renderResults();
+  } catch(e) {
+    const msg = e.message || 'Unknown error';
+    const isTimeout = msg.includes('timed out');
+    const isFetch = msg.includes('Failed to fetch') || msg.includes('NetworkError') || msg.includes('network');
+    let advice = 'The Wikidata SPARQL endpoint may be temporarily overloaded. Try reducing the limit or narrowing your selection.';
+    if (isTimeout) advice = 'The query took too long. Try selecting <b>both</b> an occupation and a country, or reduce the limit to 100 or 200.';
+    if (isFetch) advice = 'Could not reach the Wikidata server. Check your internet connection and try again in a few seconds. If the problem persists, the SPARQL endpoint may be temporarily down — you can check its <a href="https://query.wikidata.org/" target="_blank">status here</a>.';
+    content.innerHTML = `
+      <div class="err"><div class="err-box">
+        <strong>Query error</strong>
+        <p>${esc(msg)}</p>
+        <p style="margin-top:6px;font-size:12px">${advice}</p>
+        <p style="margin-top:8px"><button onclick="doSearch()" style="padding:6px 16px;cursor:pointer;border:1px solid #a2a9b1;border-radius:3px;background:#f8f9fa;font-family:inherit;font-size:14px">↻ Retry</button></p>
+      </div></div>`;
+  } finally {
+    isLoading = false;
+    updateSearchBtn();
+    document.getElementById('go-btn').textContent = 'Search Wikidata';
+  }
+}
+
+// ── RENDER RESULTS ───────────────────────────────────────────────────────────
+function renderResults() {
+  const titleParts = [];
+  if (selectedOcc) titleParts.push(selectedOcc.name);
+  if (selectedCty) titleParts.push(selectedCty.name);
+  const title = titleParts.join(' — ');
+
+  // Filter
+  const q = tableFilterText.toLowerCase();
+  let filtered = currentResults;
+  if (q) {
+    filtered = filtered.filter(r =>
+      (r.name||'').toLowerCase().includes(q) ||
+      (r.description||'').toLowerCase().includes(q) ||
+      (r.country||'').toLowerCase().includes(q) ||
+      (r.occupations||'').toLowerCase().includes(q)
+    );
+  }
+
+  // Sort
+  const sorted = [...filtered].sort((a, b) => {
+    let av = a[sortCol], bv = b[sortCol];
+    if (sortCol === 'sites') { av = Number(av)||0; bv = Number(bv)||0; }
+    else { av = (av||'').toLowerCase(); bv = (bv||'').toLowerCase(); }
+    if (av < bv) return sortDir === 'asc' ? -1 : 1;
+    if (av > bv) return sortDir === 'asc' ? 1 : -1;
+    return 0;
+  });
+
+  function sortArrow(col) {
+    if (sortCol === col) return `<span class="sa">${sortDir === 'asc' ? ' ↑' : ' ↓'}</span>`;
+    return '<span class="sa dim"> ⇅</span>';
+  }
+
+  let rows = '';
+  for (let i = 0; i < sorted.length; i++) {
+    const r = sorted[i];
+    const wpTitle = encodeURIComponent(r.name.replace(/ /g, '_'));
+    rows += `<tr>
+      <td class="c-num">${i+1}</td>
+      <td class="c-name"><a href="https://en.wikipedia.org/w/index.php?title=${wpTitle}&action=edit&redlink=1" target="_blank" class="redlink" title="Create &quot;${esc(r.name)}&quot; on English Wikipedia">${esc(r.name)}</a></td>
+      <td class="c-img">${r.image ? '<img src="' + thumbUrl(r.image, 50) + '" loading="lazy" alt="" width="50">' : ''}</td>
+      <td class="c-desc">${esc(r.description)}</td>
+      <td class="c-occ">${esc(r.occupations)}</td>
+      <td class="c-cty">${esc(r.country)}</td>
+      <td class="c-date">${esc(r.dob)}</td>
+      <td class="c-date">${esc(r.dod)}</td>
+      <td class="c-item"><a href="https://www.wikidata.org/wiki/${r.qid}" target="_blank" class="wd-link">${r.qid}</a></td>
+      <td class="c-sites">${r.sites}</td>
+    </tr>`;
+  }
+
+  document.getElementById('content').innerHTML = `
+    <div class="results">
+      <div class="res-head">
+        <h2>Missing articles: ${esc(title)}</h2>
+        <p class="res-intro">
+          This table of missing women biographies was generated using
+          <a href="https://www.wikidata.org" target="_blank">Wikidata</a> for
+          <a href="https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Women_in_Red" target="_blank">Wikipedia:WikiProject Women in Red</a>.
+          The table can be sorted by clicking on column headers.
+          The <strong>sitelinks</strong> column indicates the number of links to information about the women on other
+          Wikimedia projects (including Commons, Wikisource, and other-language Wikipedias) and is often an indicator
+          of notability. Sitelinks can be accessed via the Wikidata link in the <strong>item</strong> column.
+        </p>
+      </div>
+      <div class="res-toolbar">
+        <span class="res-count">∑ <strong>${filtered.length}</strong> items</span>
+        <input class="res-filter" type="text" placeholder="Filter table…" value="${esc(tableFilterText)}" oninput="onTableFilter(this.value)">
+        <a class="sparql-btn" href="#" onclick="openSparql(); return false;" title="Open this query in Wikidata Query Service">SPARQL ↗</a>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr>
+            <th class="c-num">#</th>
+            <th class="c-name sortable" onclick="onSort('name')">name${sortArrow('name')}</th>
+            <th class="c-img">image</th>
+            <th class="c-desc">description</th>
+            <th class="c-occ sortable" onclick="onSort('occupations')">occupation (P106)${sortArrow('occupations')}</th>
+            <th class="c-cty sortable" onclick="onSort('country')">country of citizenship (P27)${sortArrow('country')}</th>
+            <th class="c-date sortable" onclick="onSort('dob')">date of birth (P569)${sortArrow('dob')}</th>
+            <th class="c-date sortable" onclick="onSort('dod')">date of death (P570)${sortArrow('dod')}</th>
+            <th class="c-item">item</th>
+            <th class="c-sites sortable" onclick="onSort('sites')">sitelinks${sortArrow('sites')}</th>
+          </tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+        ${sorted.length === 0 ? '<div class="empty-msg">No results found' + (tableFilterText ? ' matching your filter' : '') + '.</div>' : ''}
+      </div>
+      <div class="res-foot">
+        This list is generated live from <a href="https://www.wikidata.org" target="_blank">Wikidata</a> via SPARQL.
+        See the <a href="https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Women_in_Red/Redlist_index" target="_blank">Redlist index</a> for
+        the full index on Wikipedia. To add names, see the
+        <a href="https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Women_in_Red/How_to_add_names_to_Women_in_Red_lists" target="_blank">guide</a>.
+      </div>
+    </div>`;
+}
+
+function onSort(col) {
+  if (sortCol === col) sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+  else { sortCol = col; sortDir = col === 'sites' ? 'desc' : 'asc'; }
+  renderResults();
+}
+
+function onTableFilter(val) {
+  tableFilterText = val;
+  renderResults();
+}
+
+// Init
+updateSearchBtn();
+</script>
 </body>
 </html>
