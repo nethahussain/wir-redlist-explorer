@@ -85,6 +85,10 @@ The country matching uses the same multi-property approach documented in the [Wi
 
 A version that runs natively on English Wikipedia as a user script is available in the [`mediawiki/`](mediawiki/) directory. It uses MediaWiki's built-in OOUI widgets and `wikitable sortable` classes. See [`mediawiki/README.md`](mediawiki/README.md) for installation instructions.
 
+## Other languages
+
+A Ukrainian version is available: [`tool-uk.html`](tool-uk.html). To translate the tool into another language, see the [Translation Guide](TRANSLATION_GUIDE.md).
+
 ## License
 
 CC0
