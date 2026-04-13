@@ -187,7 +187,8 @@ tbody tr:hover{background:#ECEEF1}
         <a class="wl" href="https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Women_in_Red/Redlist_index" target="_blank">
           Women in Red Redlist Index
         </a> — each row shows the woman's name (as a red link for article creation), description, occupation (P106),
-        country of citizenship (P27), date of birth (P569), date of death (P570), Wikidata item ID, and sitelink count.
+        country (P27), date of birth (P569), date of death (P570), Wikidata item ID, and sitelink count.
+        The country search matches citizenship, place of birth, and other country associations; the displayed country column shows all citizenships.
       </p>
       <p style="margin-top:18px;font-size:13px;font-style:italic;color:#999">
         Select an occupation and/or a country above, then click <strong>Search Wikidata</strong>.
@@ -207,7 +208,7 @@ const OCCUPATIONS = {
   "Activism & Politics": {
     "Activists":["Q15253558"],"Civil rights activists":["Q1021386"],"Diplomats":["Q193391"],
     "Feminists":["Q34074720"],"Human rights activists":["Q1476215"],"Labor activists":["Q7886765"],
-    "Monarchs":["Q116"],"Nobles":["Q2478141"],"Politicians":["Q82955"],
+    "Monarchs":["Q116"],"Aristocrats":["Q2478141"],"Politicians":["Q82955"],
     "Resistance fighters":["Q1397808"],"Revolutionaries":["Q3242115"],
     "Social workers":["Q7019111"],"Suffragists":["Q27532437"],"Trade unionists":["Q15627169"]
   },
@@ -245,7 +246,7 @@ const OCCUPATIONS = {
     "Translators":["Q333634"],"Writers":["Q36180"]
   },
   "Media & Entertainment": {
-    "Actresses":["Q33999"],"Comedians":["Q245068"],"Film critics":["Q1350157"],
+    "Actors":["Q33999"],"Comedians":["Q245068"],"Film critics":["Q1350157"],
     "Film directors":["Q2526255"],"Film producers":["Q3282637"],"Models":["Q4610556"],
     "Presenters":["Q13590141"],"Radio presenters":["Q2722764"],
     "Television presenters":["Q947873"],"Voice actresses":["Q2405480"]
@@ -492,7 +493,7 @@ function buildQuery(occQIds, ctyQId, limit) {
 
   return `SELECT ?item ?itemLabel ?itemDescription
   (SAMPLE(?_dob) AS ?dob) (SAMPLE(?_dod) AS ?dod)
-  (SAMPLE(?_countryLabel) AS ?countryLabel)
+  (GROUP_CONCAT(DISTINCT ?_countryLabel; separator=", ") AS ?countryLabel)
   (GROUP_CONCAT(DISTINCT ?_occLabel; separator=", ") AS ?occupations)
   (SAMPLE(?_image) AS ?image)
   (COUNT(DISTINCT ?sitelink) AS ?sites)
@@ -503,8 +504,8 @@ WHERE {
   ${ctyFilter}
   OPTIONAL { ?item wdt:P569 ?_dob . }
   OPTIONAL { ?item wdt:P570 ?_dod . }
-  OPTIONAL { ?item wdt:P27 ?_country . ?_country rdfs:label ?_countryLabel . FILTER(LANG(?_countryLabel)="en") }
-  OPTIONAL { ?item wdt:P106 ?_occItem . ?_occItem rdfs:label ?_occLabel . FILTER(LANG(?_occLabel)="en") }
+  OPTIONAL { ?item wdt:P27 ?_country . ?_country rdfs:label ?_countryLabel . FILTER(LANG(?_countryLabel) IN ("en", "mul")) }
+  OPTIONAL { ?item wdt:P106 ?_occItem . ?_occItem rdfs:label ?_occLabel . FILTER(LANG(?_occLabel) IN ("en", "mul")) }
   OPTIONAL { ?item wdt:P18 ?_image . }
   OPTIONAL { ?sitelink schema:about ?item . }
   FILTER NOT EXISTS {
@@ -748,7 +749,7 @@ function renderResults() {
             <th class="c-img">image</th>
             <th class="c-desc">description</th>
             <th class="c-occ sortable" onclick="onSort('occupations')">occupation (P106)${sortArrow('occupations')}</th>
-            <th class="c-cty sortable" onclick="onSort('country')">country of citizenship (P27)${sortArrow('country')}</th>
+            <th class="c-cty sortable" onclick="onSort('country')">country${sortArrow('country')}</th>
             <th class="c-date sortable" onclick="onSort('dob')">date of birth (P569)${sortArrow('dob')}</th>
             <th class="c-date sortable" onclick="onSort('dod')">date of death (P570)${sortArrow('dod')}</th>
             <th class="c-item">item</th>
