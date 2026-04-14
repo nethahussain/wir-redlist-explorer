@@ -13,12 +13,12 @@ echo "=== WIR Redlist Explorer — Toolforge Deploy ==="
 
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
-mkdir -p ~/www/static
-cp "$REPO_ROOT/tool.html" ~/www/static/index.html
-cp "$REPO_ROOT/tool-uk.html" ~/www/static/tool-uk.html
+mkdir -p ~/public_html
+cp "$REPO_ROOT/tool.html" ~/public_html/index.html
+cp "$REPO_ROOT/tool-uk.html" ~/public_html/tool-uk.html
 
 echo "✅ Files deployed:"
-ls -la ~/www/static/
+ls -la ~/public_html/
 
 webservice stop 2>/dev/null || true
 webservice start
