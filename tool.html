@@ -205,108 +205,90 @@ tbody tr:hover{background:#ECEEF1}
 <script>
 // ── DATA ─────────────────────────────────────────────────────────────────────
 const OCCUPATIONS = {
-  "Activism & Politics": {
-    "Activists":["Q15253558"],"Civil rights activists":["Q1021386"],"Diplomats":["Q193391"],
-    "Feminists":["Q34074720"],"Human rights activists":["Q1476215"],"Labor activists":["Q7886765"],
-    "Monarchs":["Q116"],"Aristocrats":["Q2478141"],"Politicians":["Q82955"],
-    "Resistance fighters":["Q1397808"],"Revolutionaries":["Q3242115"],
-    "Social workers":["Q7019111"],"Suffragists":["Q27532437"],"Trade unionists":["Q15627169"]
-  },
-  "Arts & Visual Arts": {
-    "Animators":["Q266569"],"Architects":["Q42973"],"Calligraphers":["Q3303330"],
-    "Cartoonists":["Q1114448"],"Ceramicists":["Q7541856"],
-    "Costume designers":["Q1323191"],"Engravers":["Q329439"],"Graphic designers":["Q627325"],
-    "Illustrators":["Q644687"],"Jewellery designers":["Q2519376"],
-    "Miniaturists":["Q10862983"],"Muralists":["Q3374326"],"Painters":["Q1028181"],
-    "Photographers":["Q33231"],"Printmakers":["Q11569986"],"Sculptors":["Q1281618"],
-    "Textile artists":["Q5322166"],"Visual artists":["Q3391743"],"Weavers":["Q18939491"]
-  },
-  "Business & Economics": {
-    "Bankers":["Q806798"],"Businesspeople":["Q43845","Q131524"],"Economists":["Q188094"],
-    "Industrialists":["Q6606110"],"Managers":["Q2462658"]
-  },
-  "Education & Academia": {
-    "Academics":["Q3400985"],"Educational specialists":["Q5341303","Q1569495","Q901222"],
-    "Educators":["Q1056391","Q37226","Q974144"],"Librarians":["Q182436"],
-    "Linguists":["Q14467526"],"Philologists":["Q13418253"],"Professors":["Q121594"],
-    "Researchers":["Q1650915"],"University teachers":["Q1622272"]
-  },
-  "Law & Justice": {
-    "Judges":["Q16533"],"Lawyers":["Q40348"],"Magistrates":["Q4594605"],
-    "Notaries":["Q189010"],"Prosecutors":["Q600751"]
-  },
-  "Literature & Writing": {
-    "Art critics":["Q4164507"],"Art historians":["Q1792450"],"Authors":["Q482980"],
-    "Biographers":["Q18814623"],"Children's writers":["Q4853732"],
-    "Columnists":["Q1086863"],"Comics writers":["Q11892507"],"Critics":["Q6430706"],
-    "Editors":["Q1607826"],"Essayists":["Q11774202"],"Folklorists":["Q15214752"],
-    "Historians":["Q201788"],"Journalists":["Q1930187"],"Literary critics":["Q4263842"],
-    "Novelists":["Q6625963"],"Playwrights":["Q214917"],"Poets":["Q49757"],
-    "Publishers":["Q2516866"],"Screenwriters":["Q28389"],"Songwriters":["Q753110"],
-    "Translators":["Q333634"],"Writers":["Q36180"]
-  },
-  "Media & Entertainment": {
-    "Actors":["Q33999"],"Comedians":["Q245068"],"Film critics":["Q1350157"],
-    "Film directors":["Q2526255"],"Film producers":["Q3282637"],"Models":["Q4610556"],
-    "Presenters":["Q13590141"],"Radio presenters":["Q2722764"],
-    "Television presenters":["Q947873"],"Voice actresses":["Q2405480"]
-  },
-  "Performing Arts": {
-    "Choreographers":["Q2490358"],"Composers":["Q36834"],
-    "Conductors (music)":["Q158852"],"Curators":["Q674426"],"Dancers":["Q5716684"],
-    "Flautists":["Q12902372"],"Guitarists":["Q855091"],"Harpists":["Q3127709"],
-    "Musicians":["Q639669"],"Opera singers":["Q2865819"],"Organists":["Q765778"],
-    "Pianists":["Q486748"],"Singers":["Q177220"],"Theatre directors":["Q3387717"],
-    "Violinists":["Q1259917"]
-  },
-  "Religion & Spirituality": {
-    "Missionaries":["Q219477"],"Nuns":["Q191808"],
-    "Religious leaders":["Q2259451"],"Theologians":["Q1234713"]
-  },
-  "Science & Technology": {
-    "Anthropologists":["Q4773904"],"Archaeologists":["Q3621491"],"Astronomers":["Q11063"],
-    "Astrophysicists":["Q752129"],"Biologists":["Q864503"],
-    "Botanists":["Q2374149"],"Chemists":["Q593644"],"Computer scientists":["Q82594"],
-    "Ecologists":["Q15839134"],"Entomologists":["Q3055126"],"Epidemiologists":["Q12765408"],
-    "Geneticists":["Q3126128"],"Geographers":["Q901402"],"Geologists":["Q520549"],
-    "Mathematicians":["Q170790"],
-    "Neuroscientists":["Q6337803"],"Paleontologists":["Q1662561"],
-    "Physicists":["Q169470"],"Statisticians":["Q2732142"],"Zoologists":["Q350979"]
-  },
-  "Medicine & Health": {
-    "Dentists":["Q27349"],"Gynecologists":["Q15924224"],
-    "Midwives":["Q185196"],"Nurses":["Q186360"],
-    "Pediatricians":["Q1919436"],
-    "Pharmacists":["Q105186"],"Physicians":["Q39631"],"Psychiatrists":["Q211346"],
-    "Psychologists":["Q212980"],"Sociologists":["Q2306091"],
-    "Surgeons":["Q774306"],"Veterinarians":["Q202883"]
-  },
-  "Sports": {
-    "Alpine skiers":["Q4144610"],"Archers":["Q13382355"],"Athletes":["Q2066131"],
-    "Badminton players":["Q13141064"],"Basketball players":["Q3665646"],
-    "Boxers":["Q11338576"],"Canoeists":["Q13382566"],"Chess players":["Q10873124"],
-    "Cricketers":["Q12299841"],"Cross-country skiers":["Q13382608"],
-    "Cyclists":["Q2309784"],"Equestrians":["Q13382603"],
-    "Fencers":["Q13381689"],"Figure skaters":["Q13381572"],
-    "Football players":["Q937857"],
-    "Gymnasts":["Q15117302"],
-    "Hockey players":["Q11774891"],"Judokas":["Q6665249"],
-    "Martial artists":["Q14373094"],"Rowers":["Q13382576"],
-    "Rugby players":["Q14089670"],"Sailors":["Q476246"],
-    "Shooters":["Q17486376"],"Speed skaters":["Q15117395"],
-    "Swimmers":["Q10843402"],"Table tennis players":["Q13219587"],
-    "Tennis players":["Q10833314"],"Track & field athletes":["Q11513337"],
-    "Volleyball players":["Q15117415"],"Water polo players":["Q17524364"],
-    "Weightlifters":["Q13381376"],"Wrestlers":["Q13474373"]
-  },
-  "Other": {
-    "Astronauts":["Q11631"],"Aviators":["Q2095549"],"Collectors":["Q3243461"],
-    "Cooks & chefs":["Q3499072"],"Engineers":["Q81096"],"Environmentalists":["Q3578589"],
-    "Explorers":["Q11900058"],"Fashion designers":["Q3501317"],"Firefighters":["Q107711"],
-    "Inventors":["Q205375"],"Military personnel":["Q47064"],"Philanthropists":["Q12362622"],
-    "Police officers":["Q361593"],"Spies":["Q9352089"],
-    "Technologists":["Q5482740"]
-  }
+  "Academics":["Q3400985"],"Activists":["Q15253558"],"Actors":["Q33999"],
+  "Alpine skiers":["Q4144610"],"Animators":["Q266569"],"Anthropologists":["Q4773904"],
+  "Archaeologists":["Q3621491"],"Archers":["Q13382355"],"Architects":["Q42973"],
+  "Aristocrats":["Q2478141"],"Art critics":["Q4164507"],"Art historians":["Q1792450"],
+  "Astronauts":["Q11631"],"Astronomers":["Q11063"],"Astrophysicists":["Q752129"],
+  "Athletes":["Q2066131"],"Authors":["Q482980"],"Aviators":["Q2095549"],
+  "Badminton players":["Q13141064"],"Bankers":["Q806798"],"Basketball players":["Q3665646"],
+  "Biographers":["Q18814623"],"Biologists":["Q864503"],"Botanists":["Q2374149"],
+  "Boxers":["Q11338576"],"Businesspeople":["Q43845","Q131524"],
+  "Calligraphers":["Q3303330"],"Canoeists":["Q13382566"],"Cartoonists":["Q1114448"],
+  "Ceramicists":["Q7541856"],"Chemists":["Q593644"],"Chess players":["Q10873124"],
+  "Children's writers":["Q4853732"],"Choreographers":["Q2490358"],
+  "Civil rights activists":["Q1021386"],"Collectors":["Q3243461"],
+  "Columnists":["Q1086863"],"Comedians":["Q245068"],"Comics writers":["Q11892507"],
+  "Composers":["Q36834"],"Computer scientists":["Q82594"],
+  "Conductors (music)":["Q158852"],"Cooks & chefs":["Q3499072"],
+  "Costume designers":["Q1323191"],"Cricketers":["Q12299841"],
+  "Critics":["Q6430706"],"Cross-country skiers":["Q13382608"],
+  "Curators":["Q674426"],"Cyclists":["Q2309784"],
+  "Dancers":["Q5716684"],"Dentists":["Q27349"],"Diplomats":["Q193391"],
+  "Ecologists":["Q15839134"],"Economists":["Q188094"],
+  "Editors":["Q1607826"],"Educational specialists":["Q5341303","Q1569495","Q901222"],
+  "Educators":["Q1056391","Q37226","Q974144"],"Engineers":["Q81096"],
+  "Engravers":["Q329439"],"Entomologists":["Q3055126"],
+  "Environmentalists":["Q3578589"],"Epidemiologists":["Q12765408"],
+  "Equestrians":["Q13382603"],"Essayists":["Q11774202"],
+  "Explorers":["Q11900058"],"Fashion designers":["Q3501317"],
+  "Feminists":["Q34074720"],"Fencers":["Q13381689"],
+  "Figure skaters":["Q13381572"],"Film critics":["Q1350157"],
+  "Film directors":["Q2526255"],"Film producers":["Q3282637"],
+  "Firefighters":["Q107711"],"Flautists":["Q12902372"],
+  "Folklorists":["Q15214752"],"Football players":["Q937857"],
+  "Geneticists":["Q3126128"],"Geographers":["Q901402"],"Geologists":["Q520549"],
+  "Graphic designers":["Q627325"],"Guitarists":["Q855091"],
+  "Gymnasts":["Q15117302"],"Gynecologists":["Q15924224"],
+  "Harpists":["Q3127709"],"Historians":["Q201788"],
+  "Hockey players":["Q11774891"],"Human rights activists":["Q1476215"],
+  "Illustrators":["Q644687"],"Industrialists":["Q6606110"],
+  "Inventors":["Q205375"],"Jewellery designers":["Q2519376"],
+  "Journalists":["Q1930187"],"Judges":["Q16533"],"Judokas":["Q6665249"],
+  "Labor activists":["Q7886765"],"Lawyers":["Q40348"],
+  "Librarians":["Q182436"],"Linguists":["Q14467526"],
+  "Literary critics":["Q4263842"],"Magistrates":["Q4594605"],
+  "Managers":["Q2462658"],"Martial artists":["Q14373094"],
+  "Mathematicians":["Q170790"],"Midwives":["Q185196"],
+  "Military personnel":["Q47064"],"Miniaturists":["Q10862983"],
+  "Missionaries":["Q219477"],"Models":["Q4610556"],
+  "Monarchs":["Q116"],"Muralists":["Q3374326"],
+  "Musicians":["Q639669"],"Neuroscientists":["Q6337803"],
+  "Notaries":["Q189010"],"Novelists":["Q6625963"],
+  "Nuns":["Q191808"],"Nurses":["Q186360"],
+  "Opera singers":["Q2865819"],"Organists":["Q765778"],
+  "Painters":["Q1028181"],"Paleontologists":["Q1662561"],
+  "Pediatricians":["Q1919436"],"Pharmacists":["Q105186"],
+  "Philanthropists":["Q12362622"],"Philologists":["Q13418253"],
+  "Photographers":["Q33231"],"Physicists":["Q169470"],
+  "Physicians":["Q39631"],"Pianists":["Q486748"],
+  "Playwrights":["Q214917"],"Poets":["Q49757"],
+  "Police officers":["Q361593"],"Politicians":["Q82955"],
+  "Presenters":["Q13590141"],"Printmakers":["Q11569986"],
+  "Professors":["Q121594"],"Prosecutors":["Q600751"],
+  "Psychiatrists":["Q211346"],"Psychologists":["Q212980"],
+  "Publishers":["Q2516866"],"Radio presenters":["Q2722764"],
+  "Religious leaders":["Q2259451"],"Researchers":["Q1650915"],
+  "Resistance fighters":["Q1397808"],"Revolutionaries":["Q3242115"],
+  "Rowers":["Q13382576"],"Rugby players":["Q14089670"],
+  "Sailors":["Q476246"],"Screenwriters":["Q28389"],
+  "Sculptors":["Q1281618"],"Shooters":["Q17486376"],
+  "Singers":["Q177220"],"Social workers":["Q7019111"],
+  "Sociologists":["Q2306091"],"Songwriters":["Q753110"],
+  "Speed skaters":["Q15117395"],"Spies":["Q9352089"],
+  "Statisticians":["Q2732142"],"Suffragists":["Q27532437"],
+  "Surgeons":["Q774306"],"Swimmers":["Q10843402"],
+  "Table tennis players":["Q13219587"],"Technologists":["Q5482740"],
+  "Television presenters":["Q947873"],"Tennis players":["Q10833314"],
+  "Textile artists":["Q5322166"],"Theatre directors":["Q3387717"],
+  "Theologians":["Q1234713"],"Track & field athletes":["Q11513337"],
+  "Trade unionists":["Q15627169"],"Translators":["Q333634"],
+  "University teachers":["Q1622272"],"Veterinarians":["Q202883"],
+  "Violinists":["Q1259917"],"Visual artists":["Q3391743"],
+  "Voice actresses":["Q2405480"],"Volleyball players":["Q15117415"],
+  "Water polo players":["Q17524364"],"Weavers":["Q18939491"],
+  "Weightlifters":["Q13381376"],"Wrestlers":["Q13474373"],
+  "Writers":["Q36180"],"Zoologists":["Q350979"]
 };
 
 const COUNTRIES = {
@@ -370,9 +352,8 @@ let lastQuery = "";
 // ── FLATTEN ──────────────────────────────────────────────────────────────────
 function flattenOcc() {
   const out = [];
-  for (const [group, items] of Object.entries(OCCUPATIONS))
-    for (const [name, qids] of Object.entries(items))
-      out.push({group, name, qids});
+  for (const [name, qids] of Object.entries(OCCUPATIONS))
+    out.push({name, qids});
   out.sort((a,b) => a.name.localeCompare(b.name));
   return out;
 }
@@ -391,8 +372,8 @@ const ALL_CTY = flattenCty();
 function buildDropdownItems(type) {
   const container = document.getElementById(type + '-items');
   const items = type === 'occ' ? ALL_OCC : ALL_CTY;
-  const showGroups = type === 'occ';
-  const groupKey = type === 'occ' ? 'group' : 'region';
+  const showGroups = type === 'cty';
+  const groupKey = 'region';
   const search = document.getElementById(type + '-search').value.toLowerCase();
   const selected = type === 'occ' ? selectedOcc : selectedCty;
 
