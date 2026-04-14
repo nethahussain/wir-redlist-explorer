@@ -160,6 +160,28 @@ tbody tr:hover{background:#ECEEF1}
         <div id="cty-items"></div>
       </div>
     </div>
+    <div class="dd" id="lang-dd">
+      <button class="dd-trigger" onclick="toggleDropdown('lang')">
+        <span class="dd-label">Перекласти з</span>
+        <span class="dd-val" id="lang-val">Будь-яка мова</span>
+        <span class="dd-chev">▾</span>
+      </button>
+      <div class="dd-menu" id="lang-menu" style="display:none">
+        <input class="dd-search" id="lang-search" placeholder="Пошук мов…" oninput="filterDropdown('lang')">
+        <div id="lang-items"></div>
+      </div>
+    </div>
+    <div class="dd" id="era-dd">
+      <button class="dd-trigger" onclick="toggleDropdown('era')">
+        <span class="dd-label">Народилася в</span>
+        <span class="dd-val" id="era-val">Будь-який період</span>
+        <span class="dd-chev">▾</span>
+      </button>
+      <div class="dd-menu" id="era-menu" style="display:none">
+        <input class="dd-search" id="era-search" placeholder="Пошук періодів…" oninput="filterDropdown('era')">
+        <div id="era-items"></div>
+      </div>
+    </div>
     <div class="f-limit">
       <label>Ліміт</label>
       <select id="limit-select">
@@ -170,7 +192,7 @@ tbody tr:hover{background:#ECEEF1}
       </select>
     </div>
     <button class="go-btn off" id="go-btn" onclick="doSearch()" disabled>Пошук у Вікіданих</button>
-    <p class="f-hint" id="f-hint">Оберіть принаймні одну професію або країну для пошуку.</p>
+    <p class="f-hint" id="f-hint">Оберіть принаймні один фільтр для пошуку.</p>
   </div>
 
   <!-- Content -->
@@ -180,7 +202,7 @@ tbody tr:hover{background:#ECEEF1}
       <p>
         Цей інструмент надсилає запити до <a class="wl" href="https://www.wikidata.org" target="_blank">Вікіданих</a> у
         реальному часі, щоб знайти жінок, які мають елемент Вікіданих, але не мають статті в українській Вікіпедії.
-        Фільтруйте за <strong>професією</strong>, за <strong>країною</strong> або за <strong>обома одночасно</strong>.
+        Фільтруйте за <strong>професією</strong>, <strong>країною</strong>, <strong>мовою джерела</strong> (для перекладу) та <strong>періодом народження</strong>.
       </p>
       <p>
         Результати відповідають формату, який використовується в
@@ -435,9 +457,47 @@ const COUNTRIES = {
   }
 };
 
+const LANGUAGES = {
+  "Arabic":"ar","Bengali":"bn","Catalan":"ca","Chinese":"zh",
+  "Czech":"cs","Danish":"da","Dutch":"nl","Esperanto":"eo",
+  "Finnish":"fi","French":"fr","German":"de","Greek":"el",
+  "Hebrew":"he","Hindi":"hi","Hungarian":"hu","Indonesian":"id",
+  "Italian":"it","Japanese":"ja","Korean":"ko","Malay":"ms",
+  "Norwegian":"no","Persian":"fa","Polish":"pl","Portuguese":"pt",
+  "Romanian":"ro","Russian":"ru","Serbian":"sr","Spanish":"es",
+  "Swedish":"sv","Tamil":"ta","Thai":"th","Turkish":"tr",
+  "Ukrainian":"uk","Urdu":"ur","Vietnamese":"vi"
+};
+
+const ERAS = {};
+// Centuries
+for (let c = 21; c >= 1; c--) {
+  const s = c === 21 ? '2000' : c === 20 ? '1900' : c === 19 ? '1800' : c === 18 ? '1700'
+    : c === 17 ? '1600' : c === 16 ? '1500' : c === 15 ? '1400' : c === 14 ? '1300'
+    : c === 13 ? '1200' : c === 12 ? '1100' : c === 11 ? '1000' : c === 10 ? '0900'
+    : c === 9 ? '0800' : c === 8 ? '0700' : c === 7 ? '0600' : c === 6 ? '0500'
+    : c === 5 ? '0400' : c === 4 ? '0300' : c === 3 ? '0200' : c === 2 ? '0100' : '0001';
+  const e = c === 21 ? '2099' : c === 20 ? '1999' : c === 19 ? '1899' : c === 18 ? '1799'
+    : c === 17 ? '1699' : c === 16 ? '1599' : c === 15 ? '1499' : c === 14 ? '1399'
+    : c === 13 ? '1299' : c === 12 ? '1199' : c === 11 ? '1099' : c === 10 ? '0999'
+    : c === 9 ? '0899' : c === 8 ? '0799' : c === 7 ? '0699' : c === 6 ? '0599'
+    : c === 5 ? '0499' : c === 4 ? '0399' : c === 3 ? '0299' : c === 2 ? '0199' : '0099';
+  const suf = c === 1 ? 'st' : c === 2 ? 'nd' : c === 3 ? 'rd' : 'th';
+  ERAS[c + suf + ' century'] = {start: s, end: e};
+}
+// Decades (1500s–2020s)
+for (let d = 2020; d >= 1500; d -= 10) {
+  ERAS[d + 's'] = {start: '' + d, end: '' + (d + 9)};
+}
+
+const ALL_LANG = Object.entries(LANGUAGES).map(([name, code]) => ({name, code})).sort((a,b) => a.name.localeCompare(b.name));
+const ALL_ERA = Object.entries(ERAS).map(([name, range]) => ({name, ...range}));
+
 // ── STATE ────────────────────────────────────────────────────────────────────
-let selectedOcc = null;   // {name, qids, group}
+let selectedOcc = null;   // {name, qids}
 let selectedCty = null;   // {name, qId, region}
+let selectedLang = null;  // {name, code}
+let selectedEra = null;   // {name, start, end}
 let currentResults = [];
 let sortCol = "sites";
 let sortDir = "desc";
@@ -465,13 +525,28 @@ const ALL_OCC = flattenOcc();
 const ALL_CTY = flattenCty();
 
 // ── DROPDOWN LOGIC ───────────────────────────────────────────────────────────
+function getItemsForType(type) {
+  if (type === 'occ') return ALL_OCC;
+  if (type === 'cty') return ALL_CTY;
+  if (type === 'lang') return ALL_LANG;
+  if (type === 'era') return ALL_ERA;
+  return [];
+}
+function getSelectedForType(type) {
+  if (type === 'occ') return selectedOcc;
+  if (type === 'cty') return selectedCty;
+  if (type === 'lang') return selectedLang;
+  if (type === 'era') return selectedEra;
+  return null;
+}
+
 function buildDropdownItems(type) {
   const container = document.getElementById(type + '-items');
-  const items = type === 'occ' ? ALL_OCC : ALL_CTY;
+  const items = getItemsForType(type);
   const showGroups = type === 'cty';
   const groupKey = 'region';
   const search = document.getElementById(type + '-search').value.toLowerCase();
-  const selected = type === 'occ' ? selectedOcc : selectedCty;
+  const selected = getSelectedForType(type);
 
   const filtered = items.filter(o =>
     o.name.toLowerCase().includes(search) ||
@@ -496,8 +571,8 @@ function buildDropdownItems(type) {
 }
 
 function toggleDropdown(type) {
-  const other = type === 'occ' ? 'cty' : 'occ';
-  document.getElementById(other + '-menu').style.display = 'none';
+  ['occ','cty','lang','era'].filter(t => t !== type).forEach(t =>
+    document.getElementById(t + '-menu').style.display = 'none');
   const menu = document.getElementById(type + '-menu');
   const vis = menu.style.display === 'none';
   menu.style.display = vis ? 'block' : 'none';
@@ -513,29 +588,27 @@ function filterDropdown(type) {
 }
 
 function selectItem(type, name) {
-  if (type === 'occ') {
-    selectedOcc = ALL_OCC.find(o => o.name === name) || null;
-    document.getElementById('occ-val').textContent = name;
-    document.getElementById('occ-dd').querySelector('.dd-trigger').classList.add('has-val');
-  } else {
-    selectedCty = ALL_CTY.find(c => c.name === name) || null;
-    document.getElementById('cty-val').textContent = name;
-    document.getElementById('cty-dd').querySelector('.dd-trigger').classList.add('has-val');
-  }
+  const items = getItemsForType(type);
+  const found = items.find(o => o.name === name) || null;
+  const defaults = {occ:'Будь-яка', cty:'Будь-яка', lang:'Будь-яка мова', era:'Будь-який період'};
+  if (type === 'occ') selectedOcc = found;
+  else if (type === 'cty') selectedCty = found;
+  else if (type === 'lang') selectedLang = found;
+  else if (type === 'era') selectedEra = found;
+  document.getElementById(type + '-val').textContent = name;
+  document.getElementById(type + '-dd').querySelector('.dd-trigger').classList.add('has-val');
   document.getElementById(type + '-menu').style.display = 'none';
   updateSearchBtn();
 }
 
 function clearSelection(type) {
-  if (type === 'occ') {
-    selectedOcc = null;
-    document.getElementById('occ-val').textContent = 'Будь-яка';
-    document.getElementById('occ-dd').querySelector('.dd-trigger').classList.remove('has-val');
-  } else {
-    selectedCty = null;
-    document.getElementById('cty-val').textContent = 'Будь-яка';
-    document.getElementById('cty-dd').querySelector('.dd-trigger').classList.remove('has-val');
-  }
+  const defaults = {occ:'Будь-яка', cty:'Будь-яка', lang:'Будь-яка мова', era:'Будь-який період'};
+  if (type === 'occ') selectedOcc = null;
+  else if (type === 'cty') selectedCty = null;
+  else if (type === 'lang') selectedLang = null;
+  else if (type === 'era') selectedEra = null;
+  document.getElementById(type + '-val').textContent = defaults[type];
+  document.getElementById(type + '-dd').querySelector('.dd-trigger').classList.remove('has-val');
   document.getElementById(type + '-menu').style.display = 'none';
   updateSearchBtn();
 }
@@ -543,7 +616,7 @@ function clearSelection(type) {
 function updateSearchBtn() {
   const btn = document.getElementById('go-btn');
   const hint = document.getElementById('f-hint');
-  const can = selectedOcc || selectedCty;
+  const can = selectedOcc || selectedCty || selectedLang || selectedEra;
   btn.disabled = !can || isLoading;
   btn.classList.toggle('off', !can);
   hint.style.display = can ? 'none' : 'block';
@@ -551,25 +624,33 @@ function updateSearchBtn() {
 
 // Close dropdowns on outside click
 document.addEventListener('mousedown', function(e) {
-  if (!document.getElementById('occ-dd').contains(e.target))
-    document.getElementById('occ-menu').style.display = 'none';
-  if (!document.getElementById('cty-dd').contains(e.target))
-    document.getElementById('cty-menu').style.display = 'none';
+  ['occ','cty','lang','era'].forEach(t => {
+    if (!document.getElementById(t + '-dd').contains(e.target))
+      document.getElementById(t + '-menu').style.display = 'none';
+  });
 });
 
 // ── SPARQL ───────────────────────────────────────────────────────────────────
-function buildQuery(occQIds, ctyQId, limit) {
+function buildQuery(occQIds, ctyQId, langCode, era, limit) {
   const hasOcc = occQIds && occQIds.length > 0;
   const hasCty = !!ctyQId;
+  const hasLang = !!langCode;
+  const hasEra = !!era;
   const occValues = hasOcc ? occQIds.map(q => 'wd:' + q).join(' ') : '';
   const occFilter = hasOcc ? '?item wdt:P106 ?occ . VALUES ?occ { ' + occValues + ' }' : '';
   const ctyFilter = hasCty
     ? '{ { ?item (wdt:P27|wdt:P17|wdt:P495|wdt:P1532) wd:' + ctyQId + ' . } UNION { ?item (wdt:P19/wdt:P17) wd:' + ctyQId + ' . } }'
     : '';
+  const langFilter = hasLang
+    ? `?srcArticle schema:about ?item ; schema:isPartOf <https://${langCode}.wikipedia.org/> .`
+    : '';
+  const eraFilter = hasEra
+    ? `?item wdt:P569 ?_dob_filter . FILTER(?_dob_filter >= "${era.start}-01-01"^^xsd:dateTime && ?_dob_filter < "${String(parseInt(era.end)+1).padStart(4,'0')}-01-01"^^xsd:dateTime)`
+    : '';
 
   return `SELECT ?item ?itemLabel ?itemDescription
   (SAMPLE(?_dob) AS ?dob) (SAMPLE(?_dod) AS ?dod)
-  (SAMPLE(?_countryLabel) AS ?countryLabel)
+  (GROUP_CONCAT(DISTINCT ?_countryLabel; separator=", ") AS ?countryLabel)
   (GROUP_CONCAT(DISTINCT ?_occLabel; separator=", ") AS ?occupations)
   (SAMPLE(?_image) AS ?image)
   (COUNT(DISTINCT ?sitelink) AS ?sites)
@@ -578,10 +659,12 @@ WHERE {
         wdt:P21 wd:Q6581072 .
   ${occFilter}
   ${ctyFilter}
+  ${langFilter}
+  ${eraFilter}
   OPTIONAL { ?item wdt:P569 ?_dob . }
   OPTIONAL { ?item wdt:P570 ?_dod . }
-  OPTIONAL { ?item wdt:P27 ?_country . ?_country rdfs:label ?_countryLabel . FILTER(LANG(?_countryLabel)="uk") }
-  OPTIONAL { ?item wdt:P106 ?_occItem . ?_occItem rdfs:label ?_occLabel . FILTER(LANG(?_occLabel)="uk") }
+  OPTIONAL { ?item wdt:P27 ?_country . ?_country rdfs:label ?_countryLabel . FILTER(LANG(?_countryLabel) IN ("uk", "en", "mul")) }
+  OPTIONAL { ?item wdt:P106 ?_occItem . ?_occItem rdfs:label ?_occLabel . FILTER(LANG(?_occLabel) IN ("uk", "en", "mul")) }
   OPTIONAL { ?item wdt:P18 ?_image . }
   OPTIONAL { ?sitelink schema:about ?item . }
   FILTER NOT EXISTS {
@@ -675,7 +758,7 @@ async function fetchWithRetry(url, maxRetries) {
 
 // ── SEARCH ───────────────────────────────────────────────────────────────────
 async function doSearch() {
-  if (!selectedOcc && !selectedCty) return;
+  if (!selectedOcc && !selectedCty && !selectedLang && !selectedEra) return;
   isLoading = true;
   updateSearchBtn();
   document.getElementById('go-btn').innerHTML = '<span class="btn-spin"></span> Запит…';
@@ -694,6 +777,8 @@ async function doSearch() {
     const query = buildQuery(
       selectedOcc ? selectedOcc.qids : null,
       selectedCty ? selectedCty.qId : null,
+      selectedLang ? selectedLang.code : null,
+      selectedEra ? {start: selectedEra.start, end: selectedEra.end} : null,
       limit
     );
     lastQuery = query;
@@ -751,6 +836,8 @@ function renderResults() {
   const titleParts = [];
   if (selectedOcc) titleParts.push(selectedOcc.name);
   if (selectedCty) titleParts.push(selectedCty.name);
+  if (selectedLang) titleParts.push('з ' + selectedLang.name + ' Вікіпедії');
+  if (selectedEra) titleParts.push('народжені ' + selectedEra.name);
   const title = titleParts.join(' — ');
 
   // Filter
